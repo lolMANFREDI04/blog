@@ -19,8 +19,8 @@
 
     $host = "localhost"; // Modifica questo con l'host del tuo database
     $username = "root"; // Modifica questo con il tuo nome utente del database
-    $passwor = ""; // Modifica questo con la tua password del database
-    $dbname = "prova"; // Modifica questo con il nome del tuo database
+    $passwor = "root"; // Modifica questo con la tua password del database
+    $dbname = "blog"; // Modifica questo con il nome del tuo database
 
     $con = mysqli_connect($host, $username, $passwor, $dbname);
 

@@ -1,6 +1,6 @@
 <?php
 // Connessione al database
-$conn = new mysqli('localhost', 'root', '', 'prova');
+$conn = new mysqli('localhost', 'root', 'root', 'blog');
 
 // Verifica la connessione
 if ($conn->connect_error) {
