@@ -19,7 +19,7 @@
             setcookie('password', $password, time() + (30 * 24 * 60 * 60), '/');
 
 
-            header("Location: /blog/home.php");
+            header("Location: /socialMedia/home.php");
         }  
         else{  
             echo  '<script>

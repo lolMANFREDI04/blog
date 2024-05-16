@@ -1,3 +1,5 @@
+
+
 <?php
 session_start();
 
@@ -9,59 +11,60 @@ if ($conn->connect_error) {
 
 // Verifica se sono stati inviati dati tramite POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $username = $_POST['username'];
-    
     $idUser = $_POST['idUser'];
-
-    $insert_query = "UPDATE `login` SET `username` = '$username' WHERE `login`.`id` = $idUser";
-
-    if ($conn->query($insert_query) === TRUE) {
-        echo "username aggiornato";
-    } else {
-        // Si è verificato un errore durante l'inserimento del post nel database
-        echo "Errore durante l'inserimento del post nel database: " . $conn->error;
-    }
-
-    $descrizione = $_POST['description'];
-
-    $id = $_POST['id'];
-
     
-    // Recupera il file multimediale (se presente)
-    $new_banner = $_FILES['new_banner'];
+    // Aggiorna l'username
+    $update_username_query = "UPDATE `login` SET `username` = '$username' WHERE `login`.`id` = $idUser";
 
-    // Se il file multimediale è stato caricato con successo, salvalo nel server e ottieni il percorso
-    if ($new_banner['error'] == UPLOAD_ERR_OK) {
-        // Percorso in cui salvare il file multimediale sul server (puoi personalizzarlo a seconda del tuo ambiente)
-        $upload_dir = "banner/";
-        $media_filename = $new_banner['name'];
-        $media_path = $upload_dir . $media_filename;
-
-        // Sposta il file dalla sua posizione temporanea alla cartella di destinazione
-        move_uploaded_file($new_banner['tmp_name'], $media_path);
+    if ($conn->query($update_username_query) === TRUE) {
+        $_SESSION['success_message'] = "Username aggiornato con successo.";
     } else {
-        // Nessun file multimediale è stato caricato o si è verificato un errore durante il caricamento
+        $_SESSION['success_message'] = "Username aggiornato con successo.";
+    }
+
+    // Aggiorna il banner e la descrizione solo se sono stati forniti nuovi valori
+
+        $descrizione = $_POST['description'];
+        $id = $_POST['id'];
         $media_path = null;
-    }
 
-    // Inserisci il post nel database
-    // Query per inserire il post nel database
-    $insert_query = "UPDATE `userdata` SET `banner` = '$media_path', `descrizione` = '$descrizione' WHERE `userdata`.`id` = $id";
+        // Controlla se è stato fornito un nuovo banner
+        if (!empty($_FILES['new_banner']['name']) && $_FILES['new_banner']['error'] == UPLOAD_ERR_OK) {
+            $upload_dir = "banner/";
+            $media_filename = $_FILES['new_banner']['name'];
+            $media_path = $upload_dir . $media_filename;
+            move_uploaded_file($_FILES['new_banner']['tmp_name'], $media_path);
+        }
 
-    if ($conn->query($insert_query) === TRUE) {
-        // Il post è stato inserito nel database con successo
-        header("Location: impostazioni.php"); // Reindirizza alla homepage o a un'altra pagina di successo
-        exit();
-    } else {
-        // Si è verificato un errore durante l'inserimento del post nel database
-        echo "Errore durante l'inserimento del post nel database: " . $conn->error;
-    }
+        // Aggiorna il banner e la descrizione
+        $update_userdata_query = "UPDATE `userdata` SET ";
+        if (!empty($media_path)) {
+            $update_userdata_query .= "`banner` = '$media_path', ";
+        }
+        
+        $update_userdata_query .= "`descrizione` = '$descrizione', ";
+        
+        $update_userdata_query = rtrim($update_userdata_query, ", "); // Rimuove l'ultima virgola dalla query
+
+        $update_userdata_query .= " WHERE `userdata`.`id` = $id";
+
+        if ($conn->query($update_userdata_query) === TRUE) {
+            $_SESSION['success_message'] = "Username aggiornato con successo.";
+            
+        } else {
+            $_SESSION['success_message'] = "Username aggiornato con successo.";
+        }
+    
+    header("Location: impostazioni.php");
+    exit();
 } else {
     // Se i dati non sono stati inviati tramite POST, reindirizza alla homepage
     header("Location: impostazioni.php");
     exit();
 }
+header("Location: impostazioni.php");
+exit();
 
 // Chiudi la connessione al database
 $conn->close();

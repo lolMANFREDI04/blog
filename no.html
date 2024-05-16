@@ -1,62 +1,10 @@
-<?php
-    // if (!isset($_COOKIE['email' && 'password'])) {
-    //     header("Location: login.html");
-    //     exit();
-    // }
-
-    if (isset($_SESSION['email']) && isset($_SESSION['password'])) {
-        $email = $_SESSION['email'];
-        $password = $_SESSION['password'];
-    } elseif (isset($_COOKIE['email']) && isset($_COOKIE['password'])) { // Controlla se è presente un cookie con l'email memorizzata
-        $email = $_COOKIE['email'];
-        $password = $_COOKIE['password'];
-    } else { // Se l'utente non è autenticato ne tramite sessione ne tramite cookie, reindirizza alla pagina di login
-        header("Location: login/index.html");
-        exit();
-    }
-
-    $host = "localhost"; // Modifica questo con l'host del tuo database
-    $usernam = "root"; // Modifica questo con il tuo nome utente del database
-    $passwor = ""; // Modifica questo con la tua password del database
-    $dbname = "blog"; // Modifica questo con il nome del tuo database
-
-    $con = mysqli_connect($host, $usernam, $passwor, $dbname);
-
-    if (!$con) {
-        die("Connessione al database fallita: " . mysqli_connect_error());
-    }
-
-    $query = "SELECT userdata.banner, login.id, login.username FROM login, userdata WHERE login.id = userdata.idUser AND login.email = '$email' AND login.passworld = '$password';";
-
-    $result = mysqli_query($con, $query);
-
-    if (mysqli_num_rows($result) > 0) {
-        // Estrai la riga risultante come un array associativo
-        $row = mysqli_fetch_assoc($result);
-        
-        // Accesso alla colonna banner dalla riga risultante
-        $banner = $row['banner'];
-
-        $id = $row['id'];
-        $username = $row['username'];
-        
-        // Ora puoi usare $banner come URL dell'immagine
-        $userLogo = $banner;
-    } else {
-        // Se non ci sono risultati, puoi assegnare un'immagine predefinita
-        $userLogo = 'https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg';
-    }
-
-    // Chiudi la connessione
-    mysqli_close($con);
-
-?>
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-sF72eFcpLnhBoZzCnwNuiSpaMoIdHyfmkch/wV+78hVPGyebjqR0XxdTGsMW0tKYM7T4XMBV3RL/xyxGcS3g/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -374,29 +322,27 @@
             font-size: 18px;
         }
 
-        .nascosto{
-            display: none; /* Nasconde la sezione dei commenti per impostazione predefinita */
-        }
-
-        .comment-toggle {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 0;
-        }
-
-        .comment-toggle:hover {
-            text-decoration: none;
-        }
-
-
-
     </style>
 </head>
 <body>
 
-    <?php include ("header.php")?>
+    <header>
+        <div style="margin-left: 0px" class="logo">
+            <img src="IMG-20190831-WA0002.jpg" alt="Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="http://localhost/socialMedia/home.php">Home</a></li>
+                <li><a href="#">Dai Seguiti</a></li>
+                <li><a href="#">Esplora</a></li>
+                <li><a href="#">Profilo</a></li>
+                <li><a href="http://localhost/socialMedia/impostazioni.php">Impostazioni</a></li>
+            </ul>
+        </nav>
+        <div style="margin-right: 20px" class="user-banner">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="User Icon">
+        </div>
+    </header>
 
     <main>
         <section class="new-post">
@@ -413,11 +359,10 @@
         <h2>Tutti i post</h2>
 
         <section class="posts">
-            <?php echo '
             <div class="post-container">
                 <div class="post-header">
-                  <img src="'.$userLogo.'" alt="Profile Picture">
-                  <div class="username">'.$username.'</div>
+                  <img src="profile-pic.jpg" alt="Profile Picture">
+                  <div class="username">example_user</div>
                   <button class="follow-button">Segui</button>
                 </div>
                 <h2 class="post-title">Titolo del Post</h2>
@@ -428,29 +373,29 @@
                 <div class="post-actions">
                     <div class="like-button">
                         <button id="like-button">Like</button>
-                    </div>   
-                    <div style="display: inline-flex;">
-                        <button id="comment-toggle" onclick="toggleClass()" class="nascosto comment-toggle" style="display: inline-flex;">
-                            <img class="fa-solid fa-message" src="message-regular.svg" style="height: 20px;margin-right: 5px;" >
-                            <h3 class="comments-title" id="comments-title">Mostra Commenti</h3>
-                        </button>
-                    
-                    </div>                  
+                    </div>                      
                   <div class="likes">120 likes</div>
                 </div>
                                 
-                <div class="comments-section nascosto" id="comments-section">
+                <div class="comments-section">
+                    <div style="display: inline-flex;">
+                    <img class="fa-solid fa-message" src="message-regular.svg" style="height: 20px;margin-right: 5px;" >
+                    <h3 class="comments-title">Commenti</h3>
                     
+                    </div>
+                    <br>
 
-                    <div class="comment-form" style="margin-top: 10px;margin-bottom: 10px;">
+                    <div class=" comment-form" style="margin-top: 10px;margin-bottom: 10px;">
                         <textarea placeholder="Aggiungi un commento..."></textarea>
                         <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>
                         </i></button>
-                    </div>
+                      </div>
                       
                   <div class="post-comments">
+
                     
-                      <div class="comment" id="comment-1"> 
+                    
+                    <div class="comment"> 
                         <div style="display: flex; align-items: center;"> 
                           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="Friend 1 Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
                           <div class="username" style="font-weight: bold;">friend1</div>
@@ -458,7 +403,7 @@
                         <div class="text" style="padding: 8px; border-radius: 8px; background-color: #f2f2f2; margin-top: 5px;">Wow, che bella foto!</div>
                       </div>
                       
-                      <div class="comment" id="comment-2"> 
+                      <div class="comment"> 
                         <div style="display: flex; align-items: center;"> 
                           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="Friend 1 Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
                           <div class="username" style="font-weight: bold;">friend2</div>
@@ -468,9 +413,7 @@
                     <!-- Aggiungi altri commenti temporanei qui -->
                   </div>
                 </div>
-            </div>
-
-            '?>
+              </div>
               
 
 
@@ -480,24 +423,7 @@
     <footer>
         <p>&copy; 2024 Blog</p>
     </footer>
-
-    <script>
-            
-        function toggleClass() {
-            debugger
-            var elemento = document.getElementById('comments-section');
-            if (elemento.classList.contains('nascosto')) {
-                elemento.classList.remove('nascosto');
-                document.getElementById('comments-title').innerText = "Nascondi Commenti";
-            } else {
-                elemento.classList.add('nascosto');
-                document.getElementById('comments-title').innerHTML = "Mostra Commenti";
-            }
-        }
-
-   
-    </script>
-
     
+    <script src="api.js"></script>
 </body>
 </html>

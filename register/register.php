@@ -1,6 +1,6 @@
 <?php
 // Connessione al database
-$conn = new mysqli('localhost', 'root', 'root', 'blog');
+$conn = new mysqli('localhost', 'root', '', 'blog');
 
 // Verifica la connessione
 if ($conn->connect_error) {
@@ -39,7 +39,7 @@ if ($result->num_rows > 0) {
         // Se l'utente ha selezionato Ricordami, salva l'email come cookie per un mese
         setcookie('email', $email, time() + (30 * 24 * 60 * 60), '/');
         setcookie('password', $password, time() + (30 * 24 * 60 * 60), '/');
-        header("Location: http://localhost/blog/home.php");
+        header("Location: http://localhost/socialMedia/home.php");
         exit();
     } else {
         // Se si verifica un errore durante l'inserimento nel database, reindirizza alla pagina di registrazione con un messaggio di errore
