@@ -41,10 +41,10 @@
         $username = $row['username'];
         
         // Ora puoi usare $banner come URL dell'immagine
-        $userLogo = $banner;
-    } else {
-        // Se non ci sono risultati, puoi assegnare un'immagine predefinita
-        $userLogo = 'https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg';
+        if($banner != null || $banner != "")
+            $userLogo = $banner;
+        else
+            $userLogo = 'https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg';
     }
 
     // Chiudi la connessione
@@ -230,6 +230,13 @@
             margin-left: auto; /* Spinge il bottone verso destra */
         }
 
+        .delite-post-button{
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            margin-left: auto; /* Spinge il bottone verso destra */
+        }
+
         .post-header img {
             width: 40px;
             height: 40px;
@@ -404,7 +411,7 @@
             <form>
                 <input type="text" placeholder="Titolo" required>
                 <textarea style="resize: none;" placeholder="Contenuto del post" required></textarea>
-                <input type="file" accept="image/*, video*">
+                <input type="file" accept="image/*, video/*">
                 <button type="submit">Pubblica</button>
             </form>
         </section>
@@ -412,65 +419,163 @@
 
         <h2>Tutti i post</h2>
 
+        <!-- INSERT INTO `post` (`id`, `titolo`, `descrizione`, `media`, `id_utente`) VALUES (NULL, 'froid', 'mclin', 'da sosa', '3'); -->
+
+        <!-- INSERT INTO `commenti` (`id`, `testo`, `id_post`) VALUES (NULL, 'bella bannanna bro', '3'); -->
         <section class="posts">
-            <?php echo '
-            <div class="post-container">
-                <div class="post-header">
-                  <img src="'.$userLogo.'" alt="Profile Picture">
-                  <div class="username">'.$username.'</div>
-                  <button class="follow-button">Segui</button>
-                </div>
-                <h2 class="post-title">Titolo del Post</h2>
-                <img class="post-image" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="Post Image">
-                <div class="post-details">
-                  <p class="post-description">Descrizione del Post Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan turpis euismod diam condimentum, ac fermentum nulla tincidunt.</p>
-                </div>
-                <div class="post-actions">
-                    <div class="like-button">
-                        <button id="like-button">Like</button>
-                    </div>   
-                    <div style="display: inline-flex;">
-                        <button id="comment-toggle" onclick="toggleClass()" class="nascosto comment-toggle" style="display: inline-flex;">
-                            <img class="fa-solid fa-message" src="message-regular.svg" style="height: 20px;margin-right: 5px;" >
-                            <h3 class="comments-title" id="comments-title">Mostra Commenti</h3>
-                        </button>
-                    
-                    </div>                  
-                  <div class="likes">120 likes</div>
-                </div>
-                                
-                <div class="comments-section nascosto" id="comments-section">
-                    
+            <br>
+            <?php 
+                $con = mysqli_connect($host, $usernam, $passwor, $dbname);
 
-                    <div class="comment-form" style="margin-top: 10px;margin-bottom: 10px;">
-                        <textarea placeholder="Aggiungi un commento..."></textarea>
-                        <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>
-                        </i></button>
-                    </div>
-                      
-                  <div class="post-comments">
-                    
-                      <div class="comment" id="comment-1"> 
-                        <div style="display: flex; align-items: center;"> 
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="Friend 1 Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
-                          <div class="username" style="font-weight: bold;">friend1</div>
-                        </div>
-                        <div class="text" style="padding: 8px; border-radius: 8px; background-color: #f2f2f2; margin-top: 5px;">Wow, che bella foto!</div>
-                      </div>
-                      
-                      <div class="comment" id="comment-2"> 
-                        <div style="display: flex; align-items: center;"> 
-                          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="Friend 1 Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
-                          <div class="username" style="font-weight: bold;">friend2</div>
-                        </div>
-                        <div class="text" style="padding: 8px; border-radius: 8px; background-color: #f2f2f2; margin-top: 5px;">Adoro le banane!</div>
-                      </div>                      
-                    <!-- Aggiungi altri commenti temporanei qui -->
-                  </div>
-                </div>
-            </div>
+                if (!$con) {
+                    die("Connessione al database fallita: " . mysqli_connect_error());
+                }
 
-            '?>
+                $get_post = "SELECT * FROM post;";
+
+                $post_respost = mysqli_query($con, $get_post);
+
+                if (mysqli_num_rows($post_respost) > 0) {
+                    // Estrai la riga risultante come un array associativo
+                    while($post = mysqli_fetch_assoc($post_respost)){
+                        $id_post = $post['id'];
+                        
+                        $get_user_by_post = "SELECT login.id, login.username, userdata.banner FROM login, userdata, post WHERE login.id = userdata.idUser AND post.id_utente = login.id AND post.id = $id_post;";
+
+                        $get_user_by_post_result = mysqli_query($con, $get_user_by_post);
+
+                        if (mysqli_num_rows($get_user_by_post_result) > 0) {
+                            // Estrai la riga risultante come un array associativo
+                            $postUser = mysqli_fetch_assoc($get_user_by_post_result);
+
+                            if($postUser['banner'] != null || $postUser['banner'] != "")
+                                $userLogo = $postUser['banner'];
+                            else
+                                $userLogo = 'https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg';
+
+                            echo '
+                                <div class="post-container">
+                                    <div class="post-header">
+                                    <img src="'.$userLogo.'" alt="Profile Picture">
+                                    <div class="username">'.$postUser['username'].'</div>
+                                    ';
+
+                                    if($postUser['id'] != $id){
+                                        echo '
+                                            <button class="follow-button">Segui</button>';
+                                    }else{
+                                        echo '
+                                            <button class="delite-post-button" id="delite-post-'.$id_post.'-button" onclick="del_post('.$id_post.');"><i class="fa fa-trash-o" style="font-size:24px"></i></button>';
+                                    }
+
+
+                                    echo '
+                                    </div>
+                                    <h2 class="post-title">'.$post['titolo'].'</h2>
+                                    ';
+                                    
+                                    $media_url = $post['media'];
+                                    if (!empty($media_url)) {
+                                        echo "<div style='margin-bottom: 10px;'>";
+            
+                                        $extension = pathinfo($media_url, PATHINFO_EXTENSION);
+                                        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                            echo "<img src='$media_url' alt='Post Image' style='max-width: 100%; border-radius: 5px;'>";
+                                        } elseif (in_array($extension, ['mp4', 'avi', 'mov', 'wmv', 'flv', '3gp', 'webm'])) {
+                                            echo "<video width='100%' controls>";
+                                            echo "<source src='$media_url' type='video/mp4'>";
+                                            echo "Il tuo browser non supporta il tag video.";
+                                            echo "</video>";
+                                        }
+            
+                                        echo "</div>";
+                                    }
+
+                                    // echo '
+                                    // <img class="post-image" src="'.$post['media'].'" alt="Post Image">
+                                    // ';
+                                    
+                                    '
+                                    <div class="post-details">
+                                    <p class="post-description">'.$post['descrizione'].'</p>
+                                    </div>
+                                    <div class="post-actions">
+                                        <div class="like-button">
+                                            <button id="like-button">Like</button>
+                                        </div>   
+                                        <div style="display: inline-flex;">
+                                            <button id="comment-toggle" onclick="toggleClass('.$id_post.')" class="nascosto comment-toggle" style="display: inline-flex;">
+                                                <img class="fa-solid fa-message" src="message-regular.svg" style="height: 20px;margin-right: 5px;" >
+                                                <h3 class="comments-title" id="comments-title-'.$id_post.'">Mostra Commenti</h3>
+                                            </button>
+                                        
+                                        </div>                  
+                                    <div class="likes">120 likes</div>
+                                    </div>
+                                                    
+                                    <div class="comments-section nascosto" id="comments-section-'.$id_post.'">
+                                        
+
+                                        <div class="comment-form" style="margin-top: 10px;margin-bottom: 10px;">
+                                            <textarea placeholder="Aggiungi un commento..."></textarea>
+                                            <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                            </i></button>
+                                        </div>
+                                        
+                                    <div class="post-comments">
+
+                                    ';  
+                                        
+                                    $get_commenti = "SELECT commenti.* FROM commenti, post WHERE commenti.id_post = post.id AND post.id = $id_post;";
+
+                                    $get_commenti_result = mysqli_query($con, $get_commenti);
+        
+                                    if (mysqli_num_rows($get_commenti_result) > 0) {
+                                        while($commento = mysqli_fetch_assoc($get_commenti_result)){
+                                            $testo = $commento['testo'];
+                                            $data_commento = $commento['data_commento'];
+
+                                            $get_dati_utente_commento = "SELECT login.username, userdata.banner FROM commenti, post, login, userdata WHERE commenti.id_post = post.id AND post.id = $id_post AND commenti.id_utente = login.id AND commenti.id_utente = userdata.idUser;";
+
+                                            $get_dati_utente_commento_result = mysqli_query($con, $get_dati_utente_commento);
+
+                                            if (mysqli_num_rows($get_dati_utente_commento_result) > 0) {
+                                                $datiUtenteCommento = mysqli_fetch_assoc($get_dati_utente_commento_result);
+
+                                                $bannerCommento = $datiUtenteCommento['banner'];
+                                            }else{
+                                                $bannerCommento = "banner/20201213175850n562a.jpg";
+                                            }
+                                            
+                                            echo '
+                                                    <div class="comment" id="comment-'.$commento['id'].'"> 
+                                                        <div style="display: flex; align-items: center;"> 
+                                                        <img src="'.$bannerCommento.'" alt="'.$datiUtenteCommento['username'].' Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                                                        <div class="username" style="font-weight: bold;">'.$datiUtenteCommento['username'].'</div>
+                                                        </div>
+                                                        <div class="text" style="padding: 8px; border-radius: 8px; background-color: #f2f2f2; margin-top: 5px;">'.$testo.'</div>
+                                                    </div>
+                                                ';
+
+                                        }
+                                    }else{
+                                        echo 'non ci sono commenti';
+                                    }
+                                    
+                                    echo '
+                                        
+                                        
+                                    </div>
+                                    </div>
+                                </div>
+                                <br>
+
+                        ';}
+                    }
+                }
+
+                mysqli_close($con);
+                ?>
               
 
 
@@ -483,15 +588,15 @@
 
     <script>
             
-        function toggleClass() {
+        function toggleClass(id_post) {
             debugger
-            var elemento = document.getElementById('comments-section');
+            var elemento = document.getElementById('comments-section-' + id_post);
             if (elemento.classList.contains('nascosto')) {
                 elemento.classList.remove('nascosto');
-                document.getElementById('comments-title').innerText = "Nascondi Commenti";
+                document.getElementById('comments-title-' + id_post).innerText = "Nascondi Commenti";
             } else {
                 elemento.classList.add('nascosto');
-                document.getElementById('comments-title').innerHTML = "Mostra Commenti";
+                document.getElementById('comments-title-' + id_post).innerHTML = "Mostra Commenti";
             }
         }
 
