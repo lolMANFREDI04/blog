@@ -138,6 +138,8 @@ session_start();
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-height: calc(100vh - 80px); /* Altezza dello schermo meno altezza del footer */
+            margin-bottom: 10px; /* Altezza del footer */
         }
 
         .profile {
@@ -281,7 +283,7 @@ session_start();
         }
 
         footer {
-
+            position: relative;
             bottom: 0;
             width: 100%;
             text-align: center;
@@ -354,7 +356,7 @@ session_start();
                 <h1>Profilo Utente</h1>
                 <div class="user-info">
                     <div class="user-avatar">
-                        <img id="userLogo" style="height: 100px; border-radius: 50%;" src="<?php echo $userLogo ?>" alt="User Avatar">
+                        <img id="userLogoo" style="height: 100px; border-radius: 50%;" src="<?php echo $userLogo ?>" alt="User Avatar">
                         <label for="fileInput" class="banner-edit-button"></label>
                         <input id="fileInput" name="new_banner" type="file" accept="image/*" style="display: none;">
                         <p id="fileName" style="display: none;"></p>
@@ -463,7 +465,7 @@ session_start();
 
         function updateUserLogo() {
             var fileInput = document.getElementById('fileInput');
-            var userLogo = document.getElementById('userLogo');
+            var userLogo = document.getElementById('userLogoo');
 
             if (fileInput.files && fileInput.files[0]) {
                 var reader = new FileReader();

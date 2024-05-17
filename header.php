@@ -59,55 +59,12 @@
     <div class="user-banner" style="margin-right: 20px;">
         <img id="userLogo" onclick="toggleProfileMenu()" style="height: 50px; width: 50px; border-radius: 50%;" src="<?php echo $userLogo?>" alt="User Icon">
         <div id="userMenu" class="dropdown-content nascosto" style=" position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); padding: 12px 16px; z-index: 1;">
-            <a href="#" onclick="logout()">Logout</a>
-            <a href="http://localhost/socialMedia/login/index.html">Change Account</a>
+            <a href="http://localhost/socialMedia/logout.php">Logout</a>
         </div>
     </div>
 </header>
 
 <script>
-    // <?php
-    //     function logout() {
-    //         // Cancella email e password dalla sessione
-    //         if (isset($_SESSION['email'])) {
-    //             unset($_SESSION['email']);
-    //         }
-    //         if (isset($_SESSION['password'])) {
-    //             unset($_SESSION['password']);
-    //         }
-
-    //         // Cancella email e password dai cookie
-    //         if (isset($_COOKIE['email'])) {
-    //             unset($_COOKIE['email']);
-    //         }
-    //         if (isset($_COOKIE['password'])) {
-    //             unset($_COOKIE['password']);
-    //         }
-
-    //         // Reindirizza alla pagina di login
-    //         header("Location: http://localhost/socialMedia/login/index.html");
-    //         exit(); // Assicura che lo script termini dopo il reindirizzamento
-    //     }
-    ?>
-
-        function logout() {
-            debugger
-            // Chiamata AJAX per effettuare il logout
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        // Reindirizza alla pagina di login dopo il logout
-                        
-                    } else {
-                        // Gestisci eventuali errori
-                        console.error("Errore durante il logout:", xhr.responseText);
-                    }
-                }
-            };
-            xhr.open("GET", "logout.php", true);
-            xhr.send();
-        }
 
     // function toggleProfileMenu() {
     //     debugger
