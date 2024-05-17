@@ -9,7 +9,7 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "+00:00";
+SET time_zone = "+02:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -30,17 +30,14 @@ SET time_zone = "+00:00";
 CREATE TABLE `commenti` (
   `id` int(11) NOT NULL,
   `testo` varchar(255) NOT NULL,
-  `data_commento` date NOT NULL DEFAULT current_timestamp(),
+  `data_commento` varchar(255) NOT NULL,
   `id_utente` int(11) NOT NULL,
   `id_post` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+);
 
 --
 -- Dump dei dati per la tabella `commenti`
 --
-
-INSERT INTO `commenti` (`id`, `testo`, `data_commento`, `id_utente`, `id_post`) VALUES
-(1, 'bella bannanna bro', '2024-05-16', 0, 3);
 
 --
 -- Indici per le tabelle scaricate
@@ -52,7 +49,7 @@ INSERT INTO `commenti` (`id`, `testo`, `data_commento`, `id_utente`, `id_post`) 
 ALTER TABLE `commenti`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_post` (`id_post`),
-  ADD key `id_utente` (`id_utente`);
+  ADD KEY `id_utente` (`id_utente`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate

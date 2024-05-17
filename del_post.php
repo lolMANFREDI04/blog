@@ -1,12 +1,12 @@
 <?php
 
     $host = "localhost"; // Modifica questo con l'host del tuo database
-    $username = "root"; // Modifica questo con il tuo nome utente del database
-    $password = ""; // Modifica questo con la tua password del database
+    $usernam = "root"; // Modifica questo con il tuo nome utente del database
+    $passwor = ""; // Modifica questo con la tua password del database
     $dbname = "blog"; // Modifica questo con il nome del tuo database
 
     // Effettua la connessione al database
-    $con = mysqli_connect($host, $username, $password, $dbname);
+    $con = mysqli_connect($host, $usernam, $passwor, $dbname);
 
     if (mysqli_connect_errno()) {
         echo json_encode(array("message" => "Impossibile connettersi al database: " . mysqli_connect_error()));
@@ -20,15 +20,27 @@
         $id = $_GET['id_post']; // Ottieni l'ID dal corpo della richiesta e convertilo in un intero
 
         if ($id) {
-            // Prepara la query per eliminare il record
-            $query = "DELETE FROM post WHERE id = $id";
+
+            $query = "DELETE FROM commenti WHERE id_post = $id";
 
             // Esegui la query
             if (mysqli_query($con, $query)) {
                 echo json_encode(array("message" => "Record eliminato con successo."));
-            } else {
-                echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
-            }
+
+                // Prepara la query per eliminare il record
+                $query = "DELETE FROM post WHERE id = $id";
+
+                // Esegui la query
+                if (mysqli_query($con, $query)) {
+                    echo json_encode(array("message" => "Record eliminato con successo."));
+                    
+                } else {
+                    echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
+                }
+                } else {
+                    echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
+                }
+            
         } else {
             echo json_encode(array("message" => "ID non valido."));
         }

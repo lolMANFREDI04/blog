@@ -524,7 +524,7 @@
                                                     </div>';
 
                                             if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
-                                                echo '<img class="post-image" style="border-radius: 10px;" src="'.$post['media'].'" alt="Post Image">';
+                                                echo '<div class="video-container"><img class="post-image" style="border-radius: 10px;" src="'.$post['media'].'" alt="Post Image"></div>';
                                             } elseif (in_array($extension, ['mp4', 'avi', 'mov', 'wmv', 'flv', '3gp', 'webm'])) {
                                                 echo '<div class="video-container"><video controls>';
                                                 echo "<source src='$media_url' type='video/mp4'>";
@@ -555,7 +555,38 @@
                                     </div>
                                     <div class="post-actions">
                                         <div class="like-button">
-                                            <button id="like-button">Like</button>
+                                            ';
+
+                                            $get_likes = "SELECT likes.id FROM likes WHERE likes.id_utente = $id AND likes.id_post = $id_post;";
+
+                                            $likes_respost = mysqli_query($con, $get_likes);
+
+                                            if (mysqli_num_rows($likes_respost) > 0) {
+                                                // Estrai la riga risultante come un array associativo
+                                                $likes = mysqli_fetch_assoc($likes_respost);
+
+                                                if($likes['id']){
+                                                    echo '<button class="like-attivo" id="like-button-'.$id_post.'" onclick="like('.$likes['id'].',null,null)">Like</button>';
+                                                    echo 'ciao';
+                                                }
+                                                
+                                            }else{
+                                                echo '<button class="like-disattivo" id="like-button-'.$id_post.'" onclick="like(null, '.$id_post.', '.$id.')">Like</button>';
+                                                echo 'lol';
+                                            }
+
+                                            $get_number_of_likes = "SELECT COUNT(likes.id) AS NumberOfLikes FROM likes WHERE likes.id_post = $id_post";
+
+                                            $likes_number_respost = mysqli_query($con, $get_number_of_likes);
+
+                                            if (mysqli_num_rows($likes_number_respost) > 0) {
+                                                // Estrai la riga risultante come un array associativo
+                                                $just_likes_number = mysqli_fetch_assoc($likes_number_respost);
+
+                                                $likes_number = $just_likes_number['NumberOfLikes'];
+                                            }
+
+                                        echo '
                                         </div>   
                                         <div style="display: inline-flex;">
                                             <button id="comment-toggle" onclick="toggleClass('.$id_post.')" class="nascosto comment-toggle" style="display: inline-flex;">
@@ -564,7 +595,7 @@
                                             </button>
                                         
                                         </div>                  
-                                    <div class="likes">120 likes</div>
+                                    <div class="likes">'.$likes_number.' likes</div>
                                     </div>
                                                     
                                     <div class="comments-section nascosto" id="comments-section-'.$id_post.'">
@@ -767,6 +798,58 @@
             } else {
                 elemento.classList.add('nascosto');
             }
+        }
+
+
+        function like(like, id_utente, id_post){
+            debugger
+
+            if(like != null){
+                
+                debugger
+                const xhr = new XMLHttpRequest();
+                xhr.open("DELETE", "http://localhost/socialMedia/del_like.php?id_like=" + like);
+                xhr.send();
+                xhr.responseType = "json";
+                xhr.onload = () => {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+
+                        // Memorizza l'ID del post in un cookie
+                        document.cookie = "lastPostId=" + id_post + "; path=/";
+                        // Ricarica la pagina
+                        window.location.reload();
+                    } else {
+                        console.log(`Error: ${xhr.status}`);
+                    }
+                };
+            }else{
+
+                debugger;
+
+                const options = {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id_utente: id_utente,
+                        id_post: id_post
+                    }),
+                };
+
+                fetch('http://localhost/socialMedia/add_like.php', options)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+
+                        // Memorizza l'ID del post in un cookie
+                        document.cookie = "lastPostId=" + id_post + "; path=/";
+                        // Ricarica la pagina
+                        window.location.reload();
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+            
         }
 
 

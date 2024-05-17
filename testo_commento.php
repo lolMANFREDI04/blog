@@ -1,12 +1,12 @@
 <?php
 
 $host = "localhost"; // Modifica questo con l'host del tuo database
-$username = "root"; // Modifica questo con il tuo nome utente del database
-$password = ""; // Modifica questo con la tua password del database
+$usernam = "root"; // Modifica questo con il tuo nome utente del database
+$passwor = ""; // Modifica questo con la tua password del database
 $dbname = "blog"; // Modifica questo con il nome del tuo database
 
 // Effettua la connessione
-$con = mysqli_connect($host, $username, $password, $dbname);
+$con = mysqli_connect($host, $usernam, $passwor, $dbname);
 
 if (mysqli_connect_errno()) {
     echo "Impossibile connettersi al database: " . mysqli_connect_error();

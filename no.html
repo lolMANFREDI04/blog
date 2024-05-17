@@ -378,23 +378,13 @@
     </header>
 
     <main>
-        <section class="new-post">
-            <h2>Crea un nuovo post</h2>
-            <form>
-                <input type="text" placeholder="Titolo" required>
-                <textarea style="resize: none;" placeholder="Contenuto del post" required></textarea>
-                <input type="file" accept="image/*, video*">
-                <button type="submit">Pubblica</button>
-            </form>
-        </section>
-        <br><br>
 
-        <h2>Tutti i post</h2>
+        <h2>Post dell'utente</h2>
 
         <section class="posts">
             <div class="post-container">
                 <div class="post-header">
-                  <img src="profile-pic.jpg" alt="Profile Picture">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="Profile Picture">
                   <div class="username">example_user</div>
                   <button class="follow-button">Segui</button>
                 </div>
@@ -457,29 +447,5 @@
         <p>&copy; 2024 Blog</p>
     </footer>
     
-    <script>
-        // function toggleProfileMenu() {
-        //     debugger
-        //     var menu = document.getElementById('profileMenu');
-        //     var profileImg = document.querySelector('.usero-banner');
-        //     profileImg.classList.toggle('square'); // Alterna tra l'immagine circolare e quadrata
-        //     var display = window.getComputedStyle(menu).getPropertyValue('display');
-        //     if (display === 'none') {
-        //         menu.style.display = 'block';
-        //     } else {
-        //         menu.style.display = 'none';
-        //     }
-        // }
-
-        function toggleProfileMenu() {
-            debugger
-            var elemento = document.getElementById('profileMenu');
-            if (elemento.classList.contains('nascondino')) {
-                elemento.classList.remove('nascondino');
-            } else {
-                elemento.classList.add('nascondino');
-            }
-        }
-    </script>
 </body>
 </html>
