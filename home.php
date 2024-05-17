@@ -140,6 +140,8 @@
             height: 100px;
         }
 
+        .text {cursor: text;}
+
         .new-post button {
             padding: 10px 20px;
             background-color: #007bff;
@@ -227,14 +229,31 @@
             border-radius: 20px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-left: auto; /* Spinge il bottone verso destra */
         }
 
         .delite-post-button{
             padding: 8px 16px;
             border: none;
             cursor: pointer;
-            margin-left: auto; /* Spinge il bottone verso destra */
+            border-radius: 10px;
+        }
+
+        .modify-post-button{
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            border-radius: 10px;
+        }
+
+        .data-post{
+            margin-left: auto;
+            margin-right: 10px;
+        }
+
+        .data-commento{
+            margin-left: auto;
+            margin-right: 10px;
         }
 
         .post-header img {
@@ -271,6 +290,7 @@
 
         .post-details {
             padding: 12px;
+            /* margin-top: 20px; */
         }
 
         .post-description {
@@ -397,6 +417,18 @@
             text-decoration: none;
         }
 
+        .video-container {
+            width: 90%;
+            margin: 0 auto; /* Centra orizzontalmente */
+            border-radius: 10px; /* Rendi gli angoli rotondi */
+            overflow: hidden; /* Assicura che il video non esca dai bordi arrotondati */
+        }
+
+        .video-container video {
+            width: 100%; /* Rendi il video larghezza al 100% del suo contenitore */
+            display: block; /* Assicura che il video occupi l'intera larghezza del suo contenitore */
+        }
+
 
 
     </style>
@@ -408,12 +440,15 @@
     <main>
         <section class="new-post">
             <h2>Crea un nuovo post</h2>
-            <form>
-                <input type="text" placeholder="Titolo" required>
-                <textarea style="resize: none;" placeholder="Contenuto del post" required></textarea>
-                <input type="file" accept="image/*, video/*">
+            <form class="post-form" action="crea_post.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="idUtentePost" value="<?php echo $id?>">
+
+                <input type="text" name="titolo" id="titolo" style="cursor: text;" placeholder="Titolo" required>
+                <textarea style="resize: none; cursor: text;" id="descrizione" name="descrizione" placeholder="Contenuto del post"></textarea>
+                <input type="file" name="media" accept="image/*, video/*">
                 <button type="submit">Pubblica</button>
             </form>
+
         </section>
         <br><br>
 
@@ -422,7 +457,7 @@
         <!-- INSERT INTO `post` (`id`, `titolo`, `descrizione`, `media`, `id_utente`) VALUES (NULL, 'froid', 'mclin', 'da sosa', '3'); -->
 
         <!-- INSERT INTO `commenti` (`id`, `testo`, `id_post`) VALUES (NULL, 'bella bannanna bro', '3'); -->
-        <section class="posts">
+        <section class="posts" id="posts">
             <br>
             <?php 
                 $con = mysqli_connect($host, $usernam, $passwor, $dbname);
@@ -431,7 +466,7 @@
                     die("Connessione al database fallita: " . mysqli_connect_error());
                 }
 
-                $get_post = "SELECT * FROM post;";
+                $get_post = "SELECT * FROM `post` ORDER BY `post`.`data_post` DESC;";
 
                 $post_respost = mysqli_query($con, $get_post);
 
@@ -439,14 +474,13 @@
                     // Estrai la riga risultante come un array associativo
                     while($post = mysqli_fetch_assoc($post_respost)){
                         $id_post = $post['id'];
-                        
                         $get_user_by_post = "SELECT login.id, login.username, userdata.banner FROM login, userdata, post WHERE login.id = userdata.idUser AND post.id_utente = login.id AND post.id = $id_post;";
 
                         $get_user_by_post_result = mysqli_query($con, $get_user_by_post);
 
                         if (mysqli_num_rows($get_user_by_post_result) > 0) {
                             // Estrai la riga risultante come un array associativo
-                            $postUser = mysqli_fetch_assoc($get_user_by_post_result);
+                            while($postUser = mysqli_fetch_assoc($get_user_by_post_result)){
 
                             if($postUser['banner'] != null || $postUser['banner'] != "")
                                 $userLogo = $postUser['banner'];
@@ -454,10 +488,11 @@
                                 $userLogo = 'https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg';
 
                             echo '
-                                <div class="post-container">
+                                <div class="post-container" id="post-'.$id_post.'">
                                     <div class="post-header">
                                     <img src="'.$userLogo.'" alt="Profile Picture">
                                     <div class="username">'.$postUser['username'].'</div>
+                                    <div class="data-post">'.date("Y-m-d H:i", strtotime($post['data_post'])).'</div>
                                     ';
 
                                     if($postUser['id'] != $id){
@@ -465,37 +500,56 @@
                                             <button class="follow-button">Segui</button>';
                                     }else{
                                         echo '
-                                            <button class="delite-post-button" id="delite-post-'.$id_post.'-button" onclick="del_post('.$id_post.');"><i class="fa fa-trash-o" style="font-size:24px"></i></button>';
+                                            <button class="modify-post-button" id="modify-post-button" onclick="modify_post('.$id_post.');"><i class="fa fa-pencil" aria-hidden="true" style="font-size:20px"></i></button>
+                                            <button class="delite-post-button" id="delite-post-button" onclick="del_post('.$id_post.');"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:20px"></i></button>';
                                     }
 
 
                                     echo '
                                     </div>
                                     <h2 class="post-title">'.$post['titolo'].'</h2>
+                                    <div id="media-post-'.$post['id'].'">
                                     ';
-                                    
-                                    $media_url = $post['media'];
-                                    if (!empty($media_url)) {
-                                        echo "<div style='margin-bottom: 10px;'>";
-            
-                                        $extension = pathinfo($media_url, PATHINFO_EXTENSION);
-                                        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
-                                            echo "<img src='$media_url' alt='Post Image' style='max-width: 100%; border-radius: 5px;'>";
-                                        } elseif (in_array($extension, ['mp4', 'avi', 'mov', 'wmv', 'flv', '3gp', 'webm'])) {
-                                            echo "<video width='100%' controls>";
-                                            echo "<source src='$media_url' type='video/mp4'>";
-                                            echo "Il tuo browser non supporta il tag video.";
-                                            echo "</video>";
-                                        }
-            
-                                        echo "</div>";
-                                    }
 
-                                    // echo '
-                                    // <img class="post-image" src="'.$post['media'].'" alt="Post Image">
-                                    // ';
+                                        $media_url = $post['media'];
+                                        if (!empty($media_url)) {
+                                            $extension = pathinfo($media_url, PATHINFO_EXTENSION);
+
+                                            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'mp4', 'avi', 'mov', 'wmv', 'flv', '3gp', 'webm']))
+                                                echo '
+                                                    <div class="curved-line" style="width: auto;">
+                                                        <svg width="100%" height="20">
+                                                            <path d="M0 10 Q182 5 600 10" stroke="#ccc" stroke-width="1" fill="none"></path>
+                                                        </svg>
+                                                    </div>';
+
+                                            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+                                                echo '<img class="post-image" style="border-radius: 10px;" src="'.$post['media'].'" alt="Post Image">';
+                                            } elseif (in_array($extension, ['mp4', 'avi', 'mov', 'wmv', 'flv', '3gp', 'webm'])) {
+                                                echo '<div class="video-container"><video controls>';
+                                                echo "<source src='$media_url' type='video/mp4'>";
+                                                echo "Il tuo browser non supporta il tag video.";
+                                                echo "</video></div>";
+                                            }
+                
+                                        }
+                                        
+                                        // <img class="post-image" src="'.$post['media'].'" alt="Post Image">
+                                        
+                                    echo '
                                     
-                                    '
+                                    </div>
+                                    '; 
+                                    
+                                    if (!empty($post['descrizione']))
+                                                echo '
+                                                    <div class="curved-line" style="transform: rotate(180deg); width: auto;">
+                                                        <svg width="100%" height="20">
+                                                            <path d="M0 10 Q182 5 600 10" stroke="#ccc" stroke-width="1" fill="none"></path>
+                                                        </svg>
+                                                    </div>';
+
+                                    echo '
                                     <div class="post-details">
                                     <p class="post-description">'.$post['descrizione'].'</p>
                                     </div>
@@ -516,17 +570,22 @@
                                     <div class="comments-section nascosto" id="comments-section-'.$id_post.'">
                                         
 
-                                        <div class="comment-form" style="margin-top: 10px;margin-bottom: 10px;">
-                                            <textarea placeholder="Aggiungi un commento..."></textarea>
-                                            <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i>
-                                            </i></button>
+                                        <div style="margin-top: 10px;margin-bottom: 10px;">
+                                            <form class="comment-form" action="crea_commento.php" method="POST">
+                                                <input type="hidden" name="id_post" value="'.$id_post.'">
+                                                <input type="hidden" name="id_user" value="'.$id.'">
+                                                
+                                                <textarea id="commento-text" name="commento-text" required placeholder="Aggiungi un commento..."></textarea>
+                                                <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                                                
+                                            </form>
                                         </div>
                                         
                                     <div class="post-comments">
 
                                     ';  
                                         
-                                    $get_commenti = "SELECT commenti.* FROM commenti, post WHERE commenti.id_post = post.id AND post.id = $id_post;";
+                                    $get_commenti = "SELECT commenti.* FROM commenti, post WHERE commenti.id_post = post.id AND post.id = $id_post ORDER BY commenti.data_commento DESC;";
 
                                     $get_commenti_result = mysqli_query($con, $get_commenti);
         
@@ -535,7 +594,9 @@
                                             $testo = $commento['testo'];
                                             $data_commento = $commento['data_commento'];
 
-                                            $get_dati_utente_commento = "SELECT login.username, userdata.banner FROM commenti, post, login, userdata WHERE commenti.id_post = post.id AND post.id = $id_post AND commenti.id_utente = login.id AND commenti.id_utente = userdata.idUser;";
+                                            $idCommento = $commento['id'];
+
+                                            $get_dati_utente_commento = "SELECT login.username, userdata.banner FROM commenti, post, login, userdata WHERE commenti.id_post = post.id AND post.id = $id_post AND commenti.id_utente = login.id AND commenti.id_utente = userdata.idUser AND commenti.id = $idCommento;";
 
                                             $get_dati_utente_commento_result = mysqli_query($con, $get_dati_utente_commento);
 
@@ -550,16 +611,26 @@
                                             echo '
                                                     <div class="comment" id="comment-'.$commento['id'].'"> 
                                                         <div style="display: flex; align-items: center;"> 
-                                                        <img src="'.$bannerCommento.'" alt="'.$datiUtenteCommento['username'].' Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
-                                                        <div class="username" style="font-weight: bold;">'.$datiUtenteCommento['username'].'</div>
+                                                            <img src="'.$bannerCommento.'" alt="'.$datiUtenteCommento['username'].' Profile Picture" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                                                            <div class="username" style="font-weight: bold;">'.$datiUtenteCommento['username'].'</div>
+                                                            <div class="data-commento">'.date("Y-m-d H:i", strtotime($commento['data_commento'])).'</div>
+                                                        '; 
+                                                        
+                                                        if($commento['id_utente'] == $id){
+                                                            echo '
+                                                                <button class="modify-post-button" id="modify-comment-button" onclick="modify_commento('.$idCommento.','.$testo.');"><i class="fa fa-pencil" aria-hidden="true" style="font-size:15px"></i></button>
+                                                                <button class="delite-post-button" id="delite-comment-button" onclick="del_commento('.$idCommento.');"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:15px"></i></button>';
+                                                        }
+                                                        
+                                                        echo '
                                                         </div>
-                                                        <div class="text" style="padding: 8px; border-radius: 8px; background-color: #f2f2f2; margin-top: 5px;">'.$testo.'</div>
+                                                        <div id="commento-text-'.$commento['id'].'" class="text" style="padding: 8px; border-radius: 8px; background-color: #f2f2f2; margin-top: 5px;">'.$testo.'</div>
                                                     </div>
                                                 ';
 
                                         }
                                     }else{
-                                        echo 'non ci sono commenti';
+                                        echo '<h3 style="text-align: center;">non ci sono commenti</h3>';
                                     }
                                     
                                     echo '
@@ -570,7 +641,8 @@
                                 </div>
                                 <br>
 
-                        ';}
+                            ';}
+                        }
                     }
                 }
 
@@ -587,6 +659,92 @@
     </footer>
 
     <script>
+
+        function modify_commento(id_commento, testo){
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost/socialMedia/testo_commento.php?testo=" + testo + "&_idCommento=" + id_commento);
+            xhr.send();
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                const data = xhr.response;
+
+                } else {
+                console.log(`Error: ${xhr.status}`);
+                }
+            };
+        }
+
+        function del_post(id_post) {
+            debugger
+            const xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost/socialMedia/del_post.php?id_post=" + id_post);
+            xhr.send();
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                    // Memorizza l'ID del post in un cookie
+                    document.cookie = "lastPostId=" + id_post + "; path=/";
+                    // Ricarica la pagina
+                    window.location.reload();
+                } else {
+                    console.log(`Error: ${xhr.status}`);
+                }
+            };
+        }
+
+        function scrollToPost() {
+            // Cerca il cookie lastPostId
+            let postId = document.cookie.split('; ').find(row => row.startsWith('lastPostId='));
+            if (postId) {
+                postId = postId.split('=')[1];
+                // Trova l'elemento del post e scorri fino ad esso
+                let postElement = document.getElementById("post-" + postId);
+                if (postElement) {
+                    postElement.scrollIntoView();
+                }
+            }
+        }
+
+        // Chiama la funzione scrollToPost dopo il caricamento della pagina
+        window.onload = scrollToPost;
+
+        function del_commento(id_commento) {
+            debugger
+            const xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost/socialMedia/del_commento.php?id_commento=" + id_commento);
+            xhr.send();
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                    // Memorizza l'ID del post in un cookie
+                    document.cookie = "lastCommentoId=" + id_commento + "; path=/";
+                    // Ricarica la pagina
+                    window.location.reload();
+                } else {
+                    console.log(`Error: ${xhr.status}`);
+                }
+            };
+        }
+
+        function scrollToCommento() {
+            // Cerca il cookie lastPostId
+            let commentoId = document.cookie.split('; ').find(row => row.startsWith('lastCommentoId='));
+            if (commentoId) {
+                commentoId = commentoId.split('=')[1];
+                // Trova l'elemento del post e scorri fino ad esso
+                let CommentoElement = document.getElementById("comment-" + commentoId);
+                if (CommentoElement) {
+                    CommentoElement.scrollIntoView();
+                }
+            }
+        }
+
+        // Chiama la funzione scrollToPost dopo il caricamento della pagina
+        window.onload = scrollToCommento;
             
         function toggleClass(id_post) {
             debugger
@@ -599,6 +757,18 @@
                 document.getElementById('comments-title-' + id_post).innerHTML = "Mostra Commenti";
             }
         }
+
+
+        function toggleProfileMenu() {
+            debugger
+            var elemento = document.getElementById('userMenu');
+            if (elemento.classList.contains('nascosto')) {
+                elemento.classList.remove('nascosto');
+            } else {
+                elemento.classList.add('nascosto');
+            }
+        }
+
 
    
     </script>

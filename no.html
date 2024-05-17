@@ -322,6 +322,33 @@
             font-size: 18px;
         }
 
+        .nascondino{
+            display: none;   
+        }
+
+        .dropdown-content {
+            
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 150px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            padding: 12px 16px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .dropdown-content a {
+            color: black;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -339,8 +366,14 @@
                 <li><a href="http://localhost/socialMedia/impostazioni.php">Impostazioni</a></li>
             </ul>
         </nav>
-        <div style="margin-right: 20px" class="user-banner">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="User Icon">
+        <div style="margin-right: 20px" class="user-banner" >
+            <div class="dropdown-content nascondino" id="profileMenu">
+                <a href="profilo.php"><i class='bx bx-user'></i> Mio Profilo</a>
+                <a href="impostazioni.php"><i class='bx bx-cog'></i> Impostazioni</a>
+                <a href="#"><i class='bx bx-help-circle'></i> Assistenza</a>
+                <a href="#"><i class='bx bx-log-out'></i> Esci</a>
+            </div>
+            <img id="usero-banner" onclick="toggleProfileMenu()" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Banana-Single.jpg/872px-Banana-Single.jpg" alt="User Icon">
         </div>
     </header>
 
@@ -424,6 +457,29 @@
         <p>&copy; 2024 Blog</p>
     </footer>
     
-    <script src="api.js"></script>
+    <script>
+        // function toggleProfileMenu() {
+        //     debugger
+        //     var menu = document.getElementById('profileMenu');
+        //     var profileImg = document.querySelector('.usero-banner');
+        //     profileImg.classList.toggle('square'); // Alterna tra l'immagine circolare e quadrata
+        //     var display = window.getComputedStyle(menu).getPropertyValue('display');
+        //     if (display === 'none') {
+        //         menu.style.display = 'block';
+        //     } else {
+        //         menu.style.display = 'none';
+        //     }
+        // }
+
+        function toggleProfileMenu() {
+            debugger
+            var elemento = document.getElementById('profileMenu');
+            if (elemento.classList.contains('nascondino')) {
+                elemento.classList.remove('nascondino');
+            } else {
+                elemento.classList.add('nascondino');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -322,13 +322,20 @@ session_start();
             color: black;
         }
 
+        .nascosto{
+            display: none; /* Nasconde la sezione dei commenti per impostazione predefinita */
+        }
+
     </style>
 </head>
 <body>
     <?php include ("header.php")?>
 
     <?php if (isset($_SESSION['error_message'])): ?>
-        <div class="message error"><?php echo $_SESSION['error_message']; ?></div>
+        <div class="alert warning">
+            <span class="closebtn">&times;</span>  
+            <strong>Error!</strong> <?php echo $_SESSION['error_message'] ?>
+        </div>
         <?php unset($_SESSION['error_message']); ?> <!-- Rimuove il messaggio dalla sessione dopo averlo mostrato -->
     <?php endif; ?>
 
@@ -468,6 +475,18 @@ session_start();
                 reader.readAsDataURL(fileInput.files[0]);
             }
         }
+
+        function toggleProfileMenu() {
+            debugger
+            var elemento = document.getElementById('userMenu');
+            if (elemento.classList.contains('nascosto')) {
+                elemento.classList.remove('nascosto');
+            } else {
+                elemento.classList.add('nascosto');
+            }
+        }
+
+        
 
     </script>
 </body>

@@ -31,7 +31,8 @@ if ($result->num_rows > 0) {
     exit();
 } else {
     // Inserisci i dati dell'utente nel database
-    $query = "INSERT INTO login (email, username, passworld) VALUES ('$email', '$username', '$password')";
+    $query = "INSERT INTO login (email, username, passworld) VALUES ('$email', '$username', '$password');";
+
     if ($conn->query($query) === TRUE) {
         // Registrazione avvenuta con successo, esegui il login automatico se l'opzione "Ricordami" è stata selezionata
         $_SESSION['email'] = $email; // Salva l'email dell'utente in sessione
@@ -39,12 +40,41 @@ if ($result->num_rows > 0) {
         // Se l'utente ha selezionato Ricordami, salva l'email come cookie per un mese
         setcookie('email', $email, time() + (30 * 24 * 60 * 60), '/');
         setcookie('password', $password, time() + (30 * 24 * 60 * 60), '/');
-        header("Location: http://localhost/socialMedia/home.php");
-        exit();
-    } else {
-        // Se si verifica un errore durante l'inserimento nel database, reindirizza alla pagina di registrazione con un messaggio di errore
-        header("Location: index.html?error=1");
-        exit();
+
+        $get_id = "SELECT login.id FROM login WHERE email = '$email' AND passworld = '$password'";
+
+        echo $get_id;
+        
+        $get_id_respost = mysqli_query($conn, $get_id);
+
+        if (mysqli_num_rows($get_id_respost) > 0) {
+            // Estrai la riga risultante come un array associativo
+            $idUser = mysqli_fetch_assoc($get_id_respost);
+
+            $id = $idUser["id"];
+            
+            $insert_details = "INSERT INTO `userdata` (`id`, `banner`, `descrizione`, `idUser`) VALUES (NULL, 'banner/default.png', NULL, '$id')";
+
+            if ($conn->query($insert_details) === TRUE) {
+                header("Location: http://localhost/socialMedia/home.php");
+                exit();
+
+            }else{
+
+                $delite = "DELETE FROM login WHERE email = '$email' AND passworld = $password";
+                // Se si verifica un errore durante l'inserimento nel database, reindirizza alla pagina di registrazione con un messaggio di errore
+                header("Location: index.html?error=4");
+                exit();
+            }
+
+            
+        } else {
+
+            $delite = "DELETE FROM login WHERE email = '$email' AND passworld = $password";
+            // Se si verifica un errore durante l'inserimento nel database, reindirizza alla pagina di registrazione con un messaggio di errore
+            header("Location: index.html?error=5");
+            exit();
+        }
     }
 }
 
