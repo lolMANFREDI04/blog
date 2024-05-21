@@ -71,9 +71,14 @@ if ($result->num_rows > 0) {
         } else {
 
             $delite = "DELETE FROM login WHERE email = '$email' AND passworld = $password";
-            // Se si verifica un errore durante l'inserimento nel database, reindirizza alla pagina di registrazione con un messaggio di errore
-            header("Location: index.html?error=5");
+            if ($conn->query($insert_details) === TRUE) {
+                header("Location: index.html?error=5");
             exit();
+            }
+            
+            // Se si verifica un errore durante l'inserimento nel database, reindirizza alla pagina di registrazione con un messaggio di errore
+            
+            
         }
     }
 }

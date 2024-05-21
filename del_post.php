@@ -17,29 +17,36 @@
     if ($_SERVER["REQUEST_METHOD"] == "DELETE") {
 
         parse_str(file_get_contents("php://input"), $_DELETE);
-        $id = $_GET['id_post']; // Ottieni l'ID dal corpo della richiesta e convertilo in un intero
+        $id_post = $_GET['id_post']; // Ottieni l'ID dal corpo della richiesta e convertilo in un intero
 
         if ($id) {
 
-            $query = "DELETE FROM commenti WHERE id_post = $id";
+            $query = "DELETE FROM commenti WHERE id_post = $id_post";
 
             // Esegui la query
             if (mysqli_query($con, $query)) {
                 echo json_encode(array("message" => "Record eliminato con successo."));
 
-                // Prepara la query per eliminare il record
-                $query = "DELETE FROM post WHERE id = $id";
+                
+                $query = "DELETE FROM likes WHERE id_post = $id_post";
 
                 // Esegui la query
                 if (mysqli_query($con, $query)) {
-                    echo json_encode(array("message" => "Record eliminato con successo."));
-                    
-                } else {
-                    echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
-                }
-                } else {
-                    echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
-                }
+                    echo json_encode(array("message" => "Record eliminato con successo."));}
+
+                    // Prepara la query per eliminare il record
+                    $query = "DELETE FROM post WHERE id = $id_post";
+
+                    // Esegui la query
+                    if (mysqli_query($con, $query)) {
+                        echo json_encode(array("message" => "Record eliminato con successo."));
+                        
+                    } else {
+                        echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
+                    }
+            } else {
+                echo json_encode(array("message" => "Errore durante l'eliminazione del record: " . mysqli_error($con)));
+            }
             
         } else {
             echo json_encode(array("message" => "ID non valido."));

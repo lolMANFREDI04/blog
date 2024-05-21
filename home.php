@@ -238,6 +238,18 @@
             border-radius: 10px;
         }
 
+        .delite-post-button:hover{
+            background-color: red;
+        }
+
+        /* .delite-post-button i:hover{
+            color: #d84731;
+        } */
+
+        .modify-post-button:hover{
+            background-color: yellow;
+        }
+
         .modify-post-button{
             padding: 8px 16px;
             border: none;
@@ -323,14 +335,19 @@
         .like-button button:hover {
             background-color: #0056b3;
         }
+        
+        .like-button {
+            margin-right: 5px;
+        }
 
         .like-button button.liked {
             background-color: #ff6347;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Aggiunto box-shadow */
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Ombra aggiunta */
         }
 
-
-        .like-button {
-            margin-right: 5px;
+        .like-button button.liked:hover {
+            background-color: #d84731;
         }
 
         .comments-section {
@@ -430,6 +447,79 @@
         }
 
 
+        /* Stili per la modale */
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        }
+
+        .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        }
+
+        .current-media-preview img,
+        .current-media-preview video {
+        max-width: 100%;
+        height: auto;
+        }
+
+        .placeholder {
+        color: #999;
+        font-style: italic;
+        }
+
+        #modifyPostForm {
+        margin-top: 20px;
+        }
+
+        #modifyPostForm input[type="text"],
+        #modifyPostForm textarea,
+        #modifyPostForm input[type="file"],
+        #modifyPostForm button {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        }
+
+        #modifyPostForm button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        }
+
+        #modifyPostForm button:hover {
+        background-color: #0056b3;
+        }
 
     </style>
 </head>
@@ -500,8 +590,48 @@
                                             <button class="follow-button">Segui</button>';
                                     }else{
                                         echo '
-                                            <button class="modify-post-button" id="modify-post-button" onclick="modify_post('.$id_post.');"><i class="fa fa-pencil" aria-hidden="true" style="font-size:20px"></i></button>
-                                            <button class="delite-post-button" id="delite-post-button" onclick="del_post('.$id_post.');"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:20px"></i></button>';
+                                        <!-- Modale per la modifica del post -->
+                                        <div id="modifyPostModal" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close" onclick="closeModal()">&times;</span>
+                                                <div class="current-media-preview">';
+
+                                                if ($post['media'] != null) {
+                                                    // Verifica se il media è un'immagine
+                                                    $image_extensions = array('jpg', 'jpeg', 'png', 'gif');
+                                                    $media_extension = strtolower(pathinfo($post['media'], PATHINFO_EXTENSION));
+                                                    if (in_array($media_extension, $image_extensions)) {
+                                                        echo '<img src="' . $post['media'] . '" alt="Current Image">';
+                                                    } else {
+                                                        // Se non è un'immagine, potrebbe essere un video
+                                                        echo '<video controls>';
+                                                        echo '<source src="' . $post['media'] . '" type="video/mp4">';
+                                                        echo 'Your browser does not support the video tag.';
+                                                        echo '</video>';
+                                                    }
+                                                } else {
+                                                    // Nessun media presente, mostra un placeholder
+                                                    echo '<div class="placeholder">Nessun media</div>';
+                                                }
+
+                                                echo '
+                                                </div>
+                                                <!-- Form di modifica del post -->
+                                                <form id="modifyPostForm">
+                                                    <!-- Campi del form per la modifica del post -->
+                                                    <!-- Titolo -->
+                                                    <input type="text" id="postTitle" name="postTitle" placeholder="' . ($post['titolo'] != null ? $post['titolo'] : 'Inserisci un titolo') . '">
+                                                    <!-- Descrizione -->
+                                                    <textarea id="postDescription" name="postDescription" placeholder="' . ($post['descrizione'] != null ? $post['descrizione'] : 'Inserisci una descrizione') . '"></textarea>
+                                                    <!-- Carica nuovo media -->
+                                                    <input type="file" id="newMedia" name="newMedia">
+                                                    <button type="submit">Salva</button>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <button class="modify-post-button" id="modify-post-button" onclick="openModal();"><i class="fa fa-pencil" aria-hidden="true" style="font-size:20px"></i></button>
+                                        <button class="delite-post-button" id="delite-post-button" onclick="del_post(' . $id_post . ');"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:20px"></i></button>';
                                     }
 
 
@@ -566,13 +696,11 @@
                                                 $likes = mysqli_fetch_assoc($likes_respost);
 
                                                 if($likes['id']){
-                                                    echo '<button class="like-attivo" id="like-button-'.$id_post.'" onclick="like('.$likes['id'].',null,null)">Like</button>';
-                                                    echo 'ciao';
+                                                    echo '<button class="liked" id="like-button-'.$id_post.'" onclick="like('.$likes['id'].',null,null)">Like</button>';
                                                 }
                                                 
                                             }else{
                                                 echo '<button class="like-disattivo" id="like-button-'.$id_post.'" onclick="like(null, '.$id_post.', '.$id.')">Like</button>';
-                                                echo 'lol';
                                             }
 
                                             $get_number_of_likes = "SELECT COUNT(likes.id) AS NumberOfLikes FROM likes WHERE likes.id_post = $id_post";
@@ -714,6 +842,7 @@
             xhr.send();
             xhr.responseType = "json";
             xhr.onload = () => {
+                debugger
                 if (xhr.readyState == 4 && xhr.status == 200) {
 
                     // Memorizza l'ID del post in un cookie
@@ -801,56 +930,87 @@
         }
 
 
-        function like(like, id_utente, id_post){
+        function like(like, id_post, id_utente){
             debugger
 
             if(like != null){
                 
-                debugger
-                const xhr = new XMLHttpRequest();
-                xhr.open("DELETE", "http://localhost/socialMedia/del_like.php?id_like=" + like);
-                xhr.send();
-                xhr.responseType = "json";
-                xhr.onload = () => {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-
-                        // Memorizza l'ID del post in un cookie
-                        document.cookie = "lastPostId=" + id_post + "; path=/";
-                        // Ricarica la pagina
-                        window.location.reload();
-                    } else {
-                        console.log(`Error: ${xhr.status}`);
-                    }
-                };
+                del_like(like, id_post);
             }else{
 
-                debugger;
-
-                const options = {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id_utente: id_utente,
-                        id_post: id_post
-                    }),
-                };
-
-                fetch('http://localhost/socialMedia/add_like.php', options)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);
-
-                        // Memorizza l'ID del post in un cookie
-                        document.cookie = "lastPostId=" + id_post + "; path=/";
-                        // Ricarica la pagina
-                        window.location.reload();
-                    })
-                    .catch(error => console.error('Error:', error));
+                addLike(id_post, id_utente);
             }
             
         }
+
+        function del_like(like, id_post){
+            debugger
+            const xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "http://localhost/socialMedia/del_like.php?id_like=" + like);
+            xhr.send();
+            xhr.responseType = "json";
+            xhr.onload = () => {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+
+                    // Memorizza l'ID del post in un cookie
+                    document.cookie = "lastPostId=" + id_post + "; path=/";
+                    // Ricarica la pagina
+                    window.location.reload();
+                } else {
+                    console.log(`Error: ${xhr.status}`);
+                }
+            };
+        }
+
+        function addLike(id_post, id_utente){
+            debugger;
+            const xhr = new XMLHttpRequest();
+            const url = 'http://localhost/socialMedia/add_like.php';
+            const params = JSON.stringify({ id_utente: id_utente, id_post: id_post });
+
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-type', 'application/json');
+
+            xhr.onreadystatechange = function () {
+                debugger
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    console.log(response);
+
+                    // Memorizza l'ID del post in un cookie
+                    document.cookie = 'lastPostId=' + id_post + '; path=/';
+                    // Ricarica la pagina
+                    window.location.reload();
+                } else if (xhr.readyState == 4 && xhr.status != 200) {
+                    console.error('Errore:', xhr.status);
+                }
+            };
+
+            xhr.send(params);
+        }
+
+        // Funzione per aprire la modale
+        function openModal() {
+            document.getElementById("modifyPostModal").style.display = "block";
+            document.body.classList.add("modal-open"); // Aggiungi la classe per bloccare lo scorrimento della pagina
+        }
+
+        // Funzione per chiudere la modale
+        function closeModal() {
+            document.getElementById("modifyPostModal").style.display = "none";
+            document.body.classList.remove("modal-open"); // Rimuovi la classe per sbloccare lo scorrimento della pagina
+        }
+
+        // Funzione per inviare il form di modifica del post
+        document.getElementById("modifyPostForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Previene il comportamento predefinito del submit del form
+        // Esegui l'aggiornamento del post qui, ad esempio tramite fetch o XMLHttpRequest
+        // Dopo l'aggiornamento, utilizza i cookie per reindirizzare l'utente al post modificato
+        // Esempio: document.cookie = "lastPostId=" + id_post + "; path=/";
+        // Chiudi la modale dopo l'aggiornamento
+        closeModal();
+        });
+
 
 
    
