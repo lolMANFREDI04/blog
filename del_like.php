@@ -2,7 +2,7 @@
 
     $host = "localhost"; // Modifica questo con l'host del tuo database
     $usernam = "root"; // Modifica questo con il tuo nome utente del database
-    $passwor = "root"; // Modifica questo con la tua password del database
+    $passwor = ""; // Modifica questo con la tua password del database
     $dbname = "blog"; // Modifica questo con il nome del tuo database
 
     // Effettua la connessione al database
