@@ -8,11 +8,9 @@ if ($conn->connect_error) {
 }
 
 // Ottieni i dati inviati dal form
-$titolo = $_POST['titolo'];
-$descrizione = $_POST['descrizione'];
+$titolo = $conn->real_escape_string($_POST['titolo']);
+$descrizione = $conn->real_escape_string($_POST['descrizione']);
 $idUtentePost = $_POST['idUtentePost'];
-
-
 
 // Controlla se il titolo è vuoto
 if ($titolo == "") {

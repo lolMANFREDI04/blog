@@ -1,80 +1,68 @@
 <?php
-
 session_start();
 
-    if (isset($_SESSION['email']) && isset($_SESSION['password'])) {
-        $email = $_SESSION['email'];
-        $password = $_SESSION['password'];
-    } elseif (isset($_COOKIE['email']) && isset($_COOKIE['password'])) { // Controlla se è presente un cookie con l'email memorizzata
-        $email = $_COOKIE['email'];
-        $password = $_COOKIE['password'];
-    } else { // Se l'utente non è autenticato ne tramite sessione ne tramite cookie, reindirizza alla pagina di login
-        header("Location: login/index.html");
-        exit();
-    }
+if (isset($_SESSION['email']) && isset($_SESSION['password'])) {
+    $email = $_SESSION['email'];
+    $password = $_SESSION['password'];
+} elseif (isset($_COOKIE['email']) && isset($_COOKIE['password'])) {
+    $email = $_COOKIE['email'];
+    $password = $_COOKIE['password'];
+} else {
+    header("Location: login/index.html");
+    exit();
+}
 
-    $host = "localhost"; // Modifica questo con l'host del tuo database
-    $usernam = "root"; // Modifica questo con il tuo nome utente del database
-    $passwor = ""; // Modifica questo con la tua password del database
-    $dbname = "blog"; // Modifica questo con il nome del tuo database
+$host = "localhost";
+$usernam = "root";
+$passwor = "";
+$dbname = "blog";
 
-    $con = mysqli_connect($host, $usernam, $passwor, $dbname);
+$con = new mysqli($host, $usernam, $passwor, $dbname);
 
-    if (!$con) {
-        die("Connessione al database fallita: " . mysqli_connect_error());
-    }
+if ($con->connect_error) {
+    die("Connessione al database fallita: " . $con->connect_error);
+}
 
-    $query = "SELECT userdata.*, login.username FROM login, userdata WHERE login.id = userdata.idUser AND login.email = '$email' AND login.passworld = '$password';";
+// Utilizzo delle query preparate
+$query = $con->prepare("SELECT userdata.*, login.username FROM login, userdata WHERE login.id = userdata.idUser AND login.email = ? AND login.passworld = ?");
+$query->bind_param("ss", $email, $password);
+$query->execute();
+$result = $query->get_result();
 
-    $result = mysqli_query($con, $query);
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $banner = $row['banner'];
+    $id = $row['id'];
+    $idUser = $row['idUser'];
+    $descrizione = $row['descrizione'];
+    $username = $row['username'];
 
-    if (mysqli_num_rows($result) > 0) {
-        // Estrai la riga risultante come un array associativo
-        $row = mysqli_fetch_assoc($result);
-        
-        // Accesso alla colonna banner dalla riga risultante
-        $banner = $row['banner'];
-        $id = $row['id'];
-        $idUser = $row['idUser'];
-        $descrizione = $row['descrizione'];
-        $username = $row['username'];
-        
-        // Ora puoi usare $banner come URL dell'immagine
-        
-        $userLogo = $banner;
-        if($userLogo=='') {
-            $userLogo = "https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg";
+    $userLogo = $banner ? $banner : "https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg";
+} else {
+    $userLogo = "https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg";
+    $queryIdByEmail = $con->prepare("SELECT id FROM login WHERE email = ? AND passworld = ?");
+    $queryIdByEmail->bind_param("ss", $email, $password);
+    $queryIdByEmail->execute();
+    $resultIdByEmail = $queryIdByEmail->get_result();
+
+    if ($resultIdByEmail->num_rows > 0) {
+        $rowIdByEmail = $resultIdByEmail->fetch_assoc();
+        $idUser = $rowIdByEmail['id'];
+
+        $insertQuery = $con->prepare("INSERT INTO userdata (banner, descrizione, idUser) VALUES ('banner/20201213175850n562a.jpg', null, ?)");
+        $insertQuery->bind_param("i", $idUser);
+        if (!$insertQuery->execute()) {
+            echo "Errore nell'inserimento dei dati dell'utente.";
         }
     } else {
-        // Se non ci sono risultati, puoi assegnare un'immagine predefinita
-        $userLogo = "https://thestatestimes.com/storage/post_display/20201213175850n562a.jpg";
-
-        // Esegui una query per ottenere l'id dell'utente utilizzando l'email e la password
-        $queryIdByEmail = "SELECT login.id FROM login WHERE login.email = '$email' AND login.passworld = '$password';";
-        $resultIdByEmail = mysqli_query($con, $queryIdByEmail);
-
-        // Verifica se la query ha prodotto un risultato
-        if (mysqli_num_rows($resultIdByEmail) > 0) {
-            // Estrai l'id dell'utente
-            $rowIdByEmail = mysqli_fetch_assoc($resultIdByEmail);
-            $idUser = $rowIdByEmail['id'];
-            
-            // Esegui una query per inserire i dati dell'utente nel caso in cui non esista nella tabella userdata
-            $insertQuery = "INSERT INTO `userdata` (`id`, `banner`, `descrizione`, `idUser`) VALUES (NULL, 'banner/20201213175850n562a.jpg', null, '$idUser')";
-            $insertResult = mysqli_query($con, $insertQuery);
-
-            if ($insertResult === false) {
-                // Gestisci l'errore nell'inserimento dei dati
-                echo "Errore nell'inserimento dei dati dell'utente.";
-            }
-        } else {
-            // Gestisci il caso in cui non viene trovato un ID utente
-            echo "Nessun utente trovato con l'email e la password fornite.";
-        }
+        echo "Nessun utente trovato con l'email e la password fornite.";
+        header("Location: logout.php");
+        exit();
     }
+}
 
-    // Chiudi la connessione
-    mysqli_close($con);
+$query->close();
+$con->close();
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +71,6 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profilo Utente</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
     <style>
         /* Reset CSS */
         * {
@@ -335,8 +322,8 @@ session_start();
 
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="alert warning">
-            <span class="closebtn">&times;</span>  
-            <strong>Error!</strong> <?php echo $_SESSION['error_message'] ?>
+            <span class="closebtn">&times;</span>
+            <strong>Error!</strong> <?php echo $_SESSION['error_message']; ?>
         </div>
         <?php unset($_SESSION['error_message']); ?> <!-- Rimuove il messaggio dalla sessione dopo averlo mostrato -->
     <?php endif; ?>
@@ -344,8 +331,8 @@ session_start();
     <!-- Visualizza un messaggio di successo se presente -->
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="alert success">
-            <span class="closebtn">&times;</span>  
-            <strong>Success!</strong> <?php echo $_SESSION['success_message'] ?>
+            <span class="closebtn">&times;</span>
+            <strong>Success!</strong> <?php echo $_SESSION['success_message']; ?>
         </div>
         <?php unset($_SESSION['success_message']); ?> <!-- Rimuove il messaggio dalla sessione dopo averlo mostrato -->
     <?php endif; ?>
@@ -356,7 +343,7 @@ session_start();
                 <h1>Profilo Utente</h1>
                 <div class="user-info">
                     <div class="user-avatar">
-                        <img id="userLogoo" style="height: 100px; border-radius: 50%;" src="<?php echo $userLogo ?>" alt="User Avatar">
+                        <img id="userLogoo" style="height: 100px; border-radius: 50%;" src="<?php echo $userLogo; ?>" alt="User Avatar">
                         <label for="fileInput" class="banner-edit-button"></label>
                         <input id="fileInput" name="new_banner" type="file" accept="image/*" style="display: none;">
                         <p id="fileName" style="display: none;"></p>
@@ -366,12 +353,12 @@ session_start();
                         <input type="hidden" name="id" value="<?php echo $id; ?>">
 
                         <label for="username">Username:</label>
-                        <input type="text" id="username" required name="username" value="<?php echo $username?>">
+                        <input type="text" id="username" required name="username" value="<?php echo $username; ?>">
                         <br>
                         <br>
                         <br>
                         <label for="description">Descrizione:</label>
-                        <textarea id="description" placeholder="Una breve descrizione..." name="description" style="resize: none;"><?php echo $descrizione?></textarea>
+                        <textarea id="description" placeholder="Una breve descrizione..." name="description" style="resize: none;"><?php echo $descrizione; ?></textarea>
                         <br>
                         <button type="submit" class="edit-details-button">Modifica dettagli</button>
                     </div>
@@ -412,7 +399,7 @@ session_start();
             if (currentPassword === "" || newPassword === "" || confirmPass === "") {
                 alert("Please fill in all fields!");
                 return false;
-            } else if (currentPassword !== "<?php echo $password ?>") {
+            } else if (currentPassword !== "<?php echo $password; ?>") {
                 alert("Current password is not correct!");
                 return false;
             } else if (newPassword !== confirmPass) {
@@ -428,16 +415,14 @@ session_start();
 
         document.addEventListener("DOMContentLoaded", function() {
             var close = document.getElementsByClassName("closebtn");
-            var i;
-
-            for (i = 0; i < close.length; i++) {
+            for (var i = 0; i < close.length; i++) {
                 close[i].onclick = function() {
                     var div = this.parentElement;
                     div.style.opacity = "0";
                     setTimeout(function() { 
                         div.style.display = "none"; 
                     }, 600);
-                }
+                };
             }
 
             // Chiudere l'alert dopo 2 secondi
