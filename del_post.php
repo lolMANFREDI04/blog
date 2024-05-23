@@ -19,7 +19,7 @@
         parse_str(file_get_contents("php://input"), $_DELETE);
         $id_post = $_GET['id_post']; // Ottieni l'ID dal corpo della richiesta e convertilo in un intero
 
-        if ($id) {
+        if ($id_post) {
 
             $query = "DELETE FROM commenti WHERE id_post = $id_post";
 

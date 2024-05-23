@@ -45,20 +45,19 @@
 ?>
 <header>
     <div class="logo">
-        <img style="border-radius: 50%;" src="IMG-20190831-WA0002.jpg" alt="Logo">
+        <img style="border-radius: 50%; margin-left: 10px;" src="IMG-20190831-WA0002.jpg" alt="Logo">
     </div>
     <nav>
         <ul>
             <li><a href="http://localhost/socialMedia/home.php">Home</a></li>
             <li><a href="#">Dai Seguiti</a></li>
-            <li><a href="#">Esplora</a></li>
             <li><a href="#">Profilo</a></li>
             <li><a href="http://localhost/socialMedia/impostazioni.php">Impostazioni</a></li>
         </ul>
     </nav>
-    <div class="user-banner" style="margin-right: 20px;">
+    <div class="user-banner" style="margin-right: 10px;">
         <img id="userLogo" onclick="toggleProfileMenu()" style="height: 50px; width: 50px; border-radius: 50%;" src="<?php echo $userLogo?>" alt="User Icon">
-        <div id="userMenu" class="dropdown-content nascosto" style=" position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); padding: 12px 16px; z-index: 1;">
+        <div id="userMenu" class="dropdown-content nascosto" style=" position: absolute; background-color: #f9f9f9; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); padding: 12px 15px; z-index: 1;">
             <a href="http://localhost/socialMedia/logout.php">Logout</a>
         </div>
     </div>
@@ -66,27 +65,14 @@
 
 <script>
 
-    // function toggleProfileMenu() {
-    //     debugger
-    //     var elemento = document.getElementById('userMenu');
-    //     if (elemento.classList.contains('nascosto')) {
-    //         elemento.classList.remove('nascosto');
-    //     } else {
-    //         elemento.classList.add('nascosto');
-    //     }
-    // }
-
-    // function toggleProfileMenu() {
-    //     debugger
-    //     var menu = document.getElementById('userMenu');
-    //     var profileImg = document.querySelector('#userLogo');
-    //     // profileImg.classList.toggle('square'); // Alterna tra l'immagine circolare e quadrata
-    //     var display = window.getComputedStyle(menu).getPropertyValue('display');
-    //     if (display === 'none') {
-    //         menu.style.display = 'block';
-    //     } else {
-    //         menu.style.display = 'none';
-    //     }
-    // }
+    function toggleProfileMenu() {
+        debugger
+        var elemento = document.getElementById('userMenu');
+        if (elemento.classList.contains('nascosto')) {
+            elemento.classList.remove('nascosto');
+        } else {
+            elemento.classList.add('nascosto');
+        }
+    }
 
 </script>

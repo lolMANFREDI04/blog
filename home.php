@@ -61,465 +61,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-sF72eFcpLnhBoZzCnwNuiSpaMoIdHyfmkch/wV+78hVPGyebjqR0XxdTGsMW0tKYM7T4XMBV3RL/xyxGcS3g/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Imposta l'altezza minima del corpo al 100% della viewport height */
-        }
-
-        header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        nav ul {
-            list-style-type: none;
-        }
-
-        nav ul li {
-            display: inline;
-            margin-left: 20px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: #fff;
-        }
-
-        .user-banner img {
-            height: 50px;
-            border-radius: 50%;
-        }
-
-        main {
-            flex: 1; /* Il contenuto principale espande per riempire lo spazio rimanente */
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .new-post {
-            margin-top: 20px;
-        }
-
-        .new-post h2 {
-            margin-bottom: 10px;
-        }
-
-        .new-post input[type="text"],
-        .new-post textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .new-post textarea {
-            height: 100px;
-        }
-
-        .text {cursor: text;}
-
-        .new-post button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .posts .post {
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .posts .post .user-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .posts .post .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .posts .post .post-content img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .posts .post .post-content p {
-            margin-bottom: 10px;
-        }
-
-        .posts .post .post-content .comment-button {
-            padding: 5px 10px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        footer {
-            text-align: center;
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        /* //////// */
-
-        .post-container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            font-family: Arial, sans-serif;
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .post-header .username {
-            font-weight: bold;
-        }
-
-        .follow-button {
-            padding: 8px 16px;
-            font-size: 14px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .delite-post-button{
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-
-        .delite-post-button:hover{
-            background-color: red;
-        }
-
-        /* .delite-post-button i:hover{
-            color: #d84731;
-        } */
-
-        .modify-post-button:hover{
-            background-color: yellow;
-        }
-
-        .modify-post-button{
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-            margin-right: 10px;
-            border-radius: 10px;
-        }
-
-        .data-post{
-            margin-left: auto;
-            margin-right: 10px;
-        }
-
-        .data-commento{
-            margin-left: auto;
-            margin-right: 10px;
-        }
-
-        .post-header img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 12px;
-        }
-
-        .follow-button {
-            padding: 8px 16px;
-            font-size: 14px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .follow-button:hover {
-            background-color: #0056b3;
-        }
-
-        .post-title {
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .post-image {
-            width: 100%;
-        }
-
-        .post-details {
-            padding: 12px;
-            /* margin-top: 20px; */
-        }
-
-        .post-description {
-            color: #333;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            border-top: 1px solid #eee;
-        }
-
-        .post-actions .likes {
-            color: #8e8e8e;
-        }
-
-        .like-button button {
-            padding: 8px 16px;
-            font-size: 14px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .like-button button:hover {
-            background-color: #0056b3;
-        }
-        
-        .like-button {
-            margin-right: 5px;
-        }
-
-        .like-button button.liked {
-            background-color: #ff6347;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Aggiunto box-shadow */
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Ombra aggiunta */
-        }
-
-        .like-button button.liked:hover {
-            background-color: #d84731;
-        }
-
-        .comments-section {
-            padding: 12px;
-        }
-
-        .comments-title {
-            margin-bottom: 8px;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .comment {
-            margin-bottom: 12px;
-            padding: 12px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-        }
-
-        .comment img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .comment .username {
-            font-weight: bold;
-        }
-
-        .comment .text {
-            color: #333;
-        }
-
-        .comment-form {
-            position: relative; /* Impostiamo la posizione relativa */
-            display: flex; /* Utilizziamo flexbox per allineare gli elementi */
-            align-items: center; /* Allineiamo verticalmente gli elementi */
-            height: 50px; /* Altezza del contenitore */
-        }
-
-        .comment-form textarea {
-            width: calc(100% - 50px); /* Larghezza della textarea meno la larghezza del pulsante */
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: none;
-            height: 45px;
-        }
-
-        .comment-form button {
-            width: 45px;
-            height: 45px; /* Altezza uguale all'altezza della textarea */
-            padding: 0; /* Rimuoviamo il padding per far sì che l'icona riempia completamente il pulsante */
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 2px; /* Impostiamo il bordo rotondo per ottenere un pulsante circolare */
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .comment-form button:hover {
-            background-color: #0056b3;
-        }
-
-        .comment-form button i {
-            font-size: 18px;
-        }
-
-        .nascosto{
-            display: none; /* Nasconde la sezione dei commenti per impostazione predefinita */
-        }
-
-        .comment-toggle {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 0;
-        }
-
-        .comment-toggle:hover {
-            text-decoration: none;
-        }
-
-        .video-container {
-            width: 90%;
-            margin: 0 auto; /* Centra orizzontalmente */
-            border-radius: 10px; /* Rendi gli angoli rotondi */
-            overflow: hidden; /* Assicura che il video non esca dai bordi arrotondati */
-        }
-
-        .video-container video {
-            width: 100%; /* Rendi il video larghezza al 100% del suo contenitore */
-            display: block; /* Assicura che il video occupi l'intera larghezza del suo contenitore */
-        }
-
-
-        /* Stili per la modale */
-        .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 600px;
-        }
-
-        .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        }
-
-        .current-media-preview img,
-        .current-media-preview video {
-        max-width: 100%;
-        height: auto;
-        }
-
-        .placeholder {
-        color: #999;
-        font-style: italic;
-        }
-
-        #modifyPostForm {
-        margin-top: 20px;
-        }
-
-        #modifyPostForm input[type="text"],
-        #modifyPostForm textarea,
-        #modifyPostForm input[type="file"],
-        #modifyPostForm button {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-        }
-
-        #modifyPostForm button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        }
-
-        #modifyPostForm button:hover {
-        background-color: #0056b3;
-        }
+        <?php include("styles_home.css"); ?>
 
     </style>
 </head>
@@ -528,6 +70,14 @@
     <?php include ("header.php")?>
 
     <main>
+        <section class="search-section" style="text-align:center">
+            <h2>Ricerca</h2>
+            <form action="ricerca.php" method="get">
+                <input type="text" name="query" id="search-input" placeholder="Cerca per titolo o username">
+                <button type="submit">Cerca</button>
+            </form>
+        </section>
+
         <section class="new-post">
             <h2>Crea un nuovo post</h2>
             <form class="post-form" action="crea_post.php" method="POST" enctype="multipart/form-data">
@@ -542,7 +92,7 @@
         </section>
         <br><br>
 
-        <h2>Tutti i post</h2>
+        <h2 style="width: 1178.7px;">Tutti i post</h2>
 
         <!-- INSERT INTO `post` (`id`, `titolo`, `descrizione`, `media`, `id_utente`) VALUES (NULL, 'froid', 'mclin', 'da sosa', '3'); -->
 
@@ -580,7 +130,7 @@
                             echo '
                                 <div class="post-container" id="post-'.$id_post.'">
                                     <div class="post-header">
-                                    <img src="'.$userLogo.'" alt="Profile Picture">
+                                    <img class="post-header-img" src="'.$userLogo.'" alt="Profile Picture">
                                     <div class="username">'.$postUser['username'].'</div>
                                     <div class="data-post">'.date("Y-m-d H:i", strtotime($post['data_post'])).'</div>
                                     ';
@@ -591,20 +141,20 @@
                                     }else{
                                         echo '
                                         <!-- Modale per la modifica del post -->
-                                        <div id="modifyPostModal" class="modal">
-                                            <div class="modal-content">
-                                                <span class="close" onclick="closeModal()">&times;</span>
-                                                <div class="current-media-preview">';
+                                        <div id="modifyPostModal-'.$id_post.'" class="modal" onclick="closeModalOnOutsideClick(event, '.$id_post.')">
+                                            <div class="modal-content" id="modalContent-'.$id_post.'">
+                                                <span class="close" onclick="closeModal('.$id_post.')">&times;</span>
+                                                <div class="current-media-preview" id="current-media-preview-'.$id_post.'">';
 
                                                 if ($post['media'] != null) {
-                                                    // Verifica se il media è un'immagine
+                                                    // Verifica se il media è un\'immagine
                                                     $image_extensions = array('jpg', 'jpeg', 'png', 'gif');
                                                     $media_extension = strtolower(pathinfo($post['media'], PATHINFO_EXTENSION));
                                                     if (in_array($media_extension, $image_extensions)) {
-                                                        echo '<img src="' . $post['media'] . '" alt="Current Image">';
+                                                        echo '<img id="newPostImg-'.$id_post.'" src="' . $post['media'] . '" alt="Current Image">';
                                                     } else {
-                                                        // Se non è un'immagine, potrebbe essere un video
-                                                        echo '<video controls>';
+                                                        // Se non è un\'immagine, potrebbe essere un video
+                                                        echo '<video controls id="newPostVideo-'.$id_post.'">';
                                                         echo '<source src="' . $post['media'] . '" type="video/mp4">';
                                                         echo 'Your browser does not support the video tag.';
                                                         echo '</video>';
@@ -617,20 +167,25 @@
                                                 echo '
                                                 </div>
                                                 <!-- Form di modifica del post -->
-                                                <form id="modifyPostForm">
+                                                <form id="modifyPostForm-'.$id_post.'" class="modifyPostForm" action="update_post.php" method="post" enctype="multipart/form-data">
+                                                    <input type="hidden" id="id_post" name="id_post" value="'.$id_post.'">
                                                     <!-- Campi del form per la modifica del post -->
                                                     <!-- Titolo -->
-                                                    <input type="text" id="postTitle" name="postTitle" placeholder="' . ($post['titolo'] != null ? $post['titolo'] : 'Inserisci un titolo') . '">
+                                                    <input type="text" id="postTitle" name="postTitle" required ' . ($post['titolo'] != null ? 'value="'.$post['titolo'].'"' : 'placeholder="Inserisci un titolo"') . '>
                                                     <!-- Descrizione -->
-                                                    <textarea id="postDescription" name="postDescription" placeholder="' . ($post['descrizione'] != null ? $post['descrizione'] : 'Inserisci una descrizione') . '"></textarea>
+                                                    <textarea id="postDescription" style="resize: none;" name="postDescription" ' . ($post['descrizione'] == null ? 'placeholder="Inserisci una descrizione"' : '') . '>'.($post['descrizione'] != null ? $post['descrizione'] : ''). '</textarea>
                                                     <!-- Carica nuovo media -->
-                                                    <input type="file" id="newMedia" name="newMedia">
+                                                    <div class="media-container">
+                                                        <input type="file" class="media" id="media-'.$id_post.'" name="media" accept="image/*, video/*" onchange="updatePostImg('.$id_post.')">
+                                                        <p class="checkbox-label">nessun media</p>
+                                                        <input type="checkbox" class="styled-checkbox" id="nessunMedia-'.$id_post.'" name="nessunMedia">
+                                                    </div>
                                                     <button type="submit">Salva</button>
                                                 </form>
                                             </div>
                                         </div>
 
-                                        <button class="modify-post-button" id="modify-post-button" onclick="openModal();"><i class="fa fa-pencil" aria-hidden="true" style="font-size:20px"></i></button>
+                                        <button class="modify-post-button" id="modify-post-button" onclick="openModal('.$id_post.');"><i class="fa fa-pencil" aria-hidden="true" style="font-size:20px"></i></button>
                                         <button class="delite-post-button" id="delite-post-button" onclick="del_post(' . $id_post . ');"><i class="fa fa-trash-o" aria-hidden="true" style="font-size:20px"></i></button>';
                                     }
 
@@ -649,12 +204,12 @@
                                                 echo '
                                                     <div class="curved-line" style="width: auto;">
                                                         <svg width="100%" height="20">
-                                                            <path d="M0 10 Q182 5 600 10" stroke="#ccc" stroke-width="1" fill="none"></path>
+                                                            <path d="M0 10 Q182 5 1000 10" stroke="#ccc" stroke-width="1" fill="none"></path>
                                                         </svg>
                                                     </div>';
 
                                             if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
-                                                echo '<div class="video-container"><img class="post-image" style="border-radius: 10px;" src="'.$post['media'].'" alt="Post Image"></div>';
+                                                echo '<div style="text-align:center;" class="video-container"><img class="post-image" style="max-width:80%; border-radius: 10px;" src="'.$post['media'].'" alt="Post Image"></div>';
                                             } elseif (in_array($extension, ['mp4', 'avi', 'mov', 'wmv', 'flv', '3gp', 'webm'])) {
                                                 echo '<div class="video-container"><video controls>';
                                                 echo "<source src='$media_url' type='video/mp4'>";
@@ -675,7 +230,7 @@
                                                 echo '
                                                     <div class="curved-line" style="transform: rotate(180deg); width: auto;">
                                                         <svg width="100%" height="20">
-                                                            <path d="M0 10 Q182 5 600 10" stroke="#ccc" stroke-width="1" fill="none"></path>
+                                                            <path d="M0 10 Q182 5 1000 10" stroke="#ccc" stroke-width="1" fill="none"></path>
                                                         </svg>
                                                     </div>';
 
@@ -918,18 +473,6 @@
             }
         }
 
-
-        function toggleProfileMenu() {
-            debugger
-            var elemento = document.getElementById('userMenu');
-            if (elemento.classList.contains('nascosto')) {
-                elemento.classList.remove('nascosto');
-            } else {
-                elemento.classList.add('nascosto');
-            }
-        }
-
-
         function like(like, id_post, id_utente){
             debugger
 
@@ -990,28 +533,80 @@
         }
 
         // Funzione per aprire la modale
-        function openModal() {
-            document.getElementById("modifyPostModal").style.display = "block";
+        function openModal(id_post) {
+            document.getElementById("modifyPostModal-"+id_post).style.display = "block";
             document.body.classList.add("modal-open"); // Aggiungi la classe per bloccare lo scorrimento della pagina
         }
 
         // Funzione per chiudere la modale
-        function closeModal() {
-            document.getElementById("modifyPostModal").style.display = "none";
+        function closeModal(id_post) {
+            document.getElementById("modifyPostModal-"+id_post).style.display = "none";
             document.body.classList.remove("modal-open"); // Rimuovi la classe per sbloccare lo scorrimento della pagina
         }
 
-        // Funzione per inviare il form di modifica del post
-        document.getElementById("modifyPostForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Previene il comportamento predefinito del submit del form
-        // Esegui l'aggiornamento del post qui, ad esempio tramite fetch o XMLHttpRequest
-        // Dopo l'aggiornamento, utilizza i cookie per reindirizzare l'utente al post modificato
-        // Esempio: document.cookie = "lastPostId=" + id_post + "; path=/";
-        // Chiudi la modale dopo l'aggiornamento
-        closeModal();
-        });
 
+        // Funzione per chiudere la modale quando si clicca fuori di essa
+        function closeModalOnOutsideClick(event, postId) {
+            var modal = document.getElementById('modifyPostModal-' + postId);
+            var modalContent = document.getElementById('modalContent-' + postId);
+            
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                closeModal(postId);
+            }
+        }
 
+        function updatePostImg(postId) {
+            var fileInput = document.getElementById('media-' + postId);
+            var previewContainer = document.getElementById('current-media-preview-' + postId);
+            var checkbox = document.getElementById('nessunMedia-' + postId);
+
+            // Clear existing media preview
+            previewContainer.innerHTML = '';
+
+            if (fileInput.files && fileInput.files[0]) {
+                var reader = new FileReader();
+                var file = fileInput.files[0];
+                var fileType = file.type;
+
+                reader.onload = function(e) {
+                    if (fileType.startsWith('image/')) {
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.alt = 'New Image';
+                        previewContainer.appendChild(img);
+                    } else if (fileType.startsWith('video/')) {
+                        var video = document.createElement('video');
+                        video.controls = true;
+                        var source = document.createElement('source');
+                        source.src = e.target.result;
+                        source.type = fileType;
+                        video.appendChild(source);
+                        previewContainer.appendChild(video);
+                    }
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            // Check if "nessunMedia" checkbox is checked
+            if (checkbox.checked) {
+                previewContainer.innerHTML = '<div class="placeholder">Nessun media</div>';
+            }
+        }
+
+        function stop_recherge() {
+            // Previene il comportamento predefinito del submit del form
+            event.preventDefault();
+
+            // Memorizza l'ID del post in un cookie
+            document.cookie = "lastPostId=" + id_post + "; path=/";
+
+            // Chiudi la modale dopo l'aggiornamento
+
+            // Chiudi la modale dopo l'aggiornamento
+            closeModal(id_post);
+        }
 
    
     </script>

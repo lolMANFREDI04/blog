@@ -265,6 +265,8 @@ button:hover {
   height: 50px;
   border-radius: 25px;
   padding: 0 30px 0 68px;
+
+  padding-right: 40px; /* Aggiunge spazio per l'icona dell'occhio */
 }
 
 
@@ -499,6 +501,14 @@ a {
     text-decoration: none; /* Rimuove la sottolineatura dai link */
 }
 
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
 </style>
 </head>
 <body>
@@ -524,11 +534,14 @@ a {
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="pass" placeholder="Password">
+						<input class="input100" type="password" id="password" name="pass" placeholder="Password">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
+            <span class="eye-icon" style="margin-right: 5px;" id="togglePassword" onclick="togglePasswordVisibility('password', 'togglePassword')">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </span>
 					</div>
 					
 					<div class="container-login100-form-btn">
@@ -574,6 +587,18 @@ a {
 			}
 			
 		}
+
+    function togglePasswordVisibility(inputId, toggleId) {
+            var input = document.getElementById(inputId);
+            var toggle = document.getElementById(toggleId);
+            if (input.type === "password") {
+                input.type = "text";
+                toggle.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
+            } else {
+                input.type = "password";
+                toggle.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+            }
+        }
 	</script>
 
 </body>

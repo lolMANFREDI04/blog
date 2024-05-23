@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 	<title>Login V1</title>
 	<meta charset="UTF-8">
@@ -266,6 +266,8 @@ button:hover {
   height: 50px;
   border-radius: 25px;
   padding: 0 30px 0 68px;
+
+  padding-right: 40px; /* Aggiunge spazio per l'icona dell'occhio */
 }
 
 
@@ -479,6 +481,14 @@ button:hover {
   opacity: 1;
 }
 
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
 @media (max-width: 992px) {
   .alert-validate::before {
     visibility: visible;
@@ -533,19 +543,25 @@ a {
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="password" placeholder="Password">
+						<input class="input100" id="password" type="password" name="password" placeholder="Password">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
+            <span class="eye-icon" style="margin-right: 5px;" onclick="togglePasswordVisibility('password', 'togglePassword')">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </span>
 					</div>
 
           <div class="wrap-input100 validate-input" data-validate = "confirmPass is required">
-              <input class="input100" type="password" name="confirmPass" placeholder="ConfirmPass">
-              <span class="focus-input100"></span>
-              <span class="symbol-input100">
-                  <i class="fa fa-lock" aria-hidden="true"></i>
-              </span>
+            <input class="input100" id="ConfirmPass" type="password" name="confirmPass" placeholder="ConfirmPass">
+            <span class="focus-input100"></span>
+            <span class="symbol-input100">
+                <i class="fa fa-lock" aria-hidden="true"></i>
+            </span>
+            <span class="eye-icon" style="margin-right: 5px;" onclick="togglePasswordVisibility('ConfirmPass', 'toggleConfirmPass')">
+              <i class="fa fa-eye" aria-hidden="true"></i>
+            </span>
           </div>
 					
 					<div class="container-login100-form-btn">
@@ -566,37 +582,50 @@ a {
 
 	<script>
 		function isValid(){
-            debugger;
-            var email = document.form.email.value;
-            var username= document.form.username.value;
-            var password = document.form.password.value;
-            var confirmPass = document.form.confirmPass.value;
+      debugger;
+      var email = document.form.email.value;
+      var username= document.form.username.value;
+      var password = document.form.password.value;
+      var confirmPass = document.form.confirmPass.value;
 
-            if(email.length == "" || password.length == "" || confirmPass.length == ""){
-                alert("Please fill in all fields!");
-                return false;
-            }
-            else if(email.length==""){
-                alert(" Email field is empty!!!");
-                return false;
-            }
-            else if(username.length==""){
-                alert(" Username field is empty!!!");
-                return false;
-            }
-            else if(password.length==""){
-                alert(" Password field is empty!!!");
-                return false;
-            }
-            else if(password != confirmPass){
-                alert("Passwords do not match!");
-                return false;
-            }
-            else if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\W/.test(password)) {
-                alert("Password must be at least 8 characters long and contain uppercase, lowercase, and special characters!");
-                return false;
-            }
-        }
+      if(email.length == "" || password.length == "" || confirmPass.length == ""){
+          alert("Please fill in all fields!");
+          return false;
+      }
+      else if(email.length==""){
+          alert(" Email field is empty!!!");
+          return false;
+      }
+      else if(username.length==""){
+          alert(" Username field is empty!!!");
+          return false;
+      }
+      else if(password.length==""){
+          alert(" Password field is empty!!!");
+          return false;
+      }
+      else if(password != confirmPass){
+          alert("Passwords do not match!");
+          return false;
+      }
+      else if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\W/.test(password)) {
+          alert("Password must be at least 8 characters long and contain uppercase, lowercase, and special characters!");
+          return false;
+      }
+    }
+
+    function togglePasswordVisibility(inputId, toggleId) {
+      var input = document.getElementById(inputId);
+      var toggle = document.getElementById(toggleId);
+      if (input.type === "password") {
+          input.type = "text";
+          toggle.innerHTML = '<i class="fa fa-eye-slash" aria-hidden="true"></i>';
+      } else {
+          input.type = "password";
+          toggle.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+      }
+    }
+
 	</script>
 
 </body>

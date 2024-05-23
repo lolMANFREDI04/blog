@@ -1,0 +1,531 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Altezza minima del corpo pari al 100% dell'altezza della viewport */
+}
+
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px;
+    border-radius: 50%;
+}
+
+nav ul {
+    list-style-type: none;
+}
+
+nav ul li {
+    display: inline;
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.user-banner img {
+    height: 50px;
+    border-radius: 50%;
+}
+
+main {
+    flex: 1; /* Il contenuto principale espande per riempire lo spazio rimanente */
+    max-width: 60%; /* Larghezza massima del contenitore principale pari al 90% della larghezza della viewport */
+    margin: 20px auto; /* Margine esterno di 20px su tutti i lati, con auto per centrare il contenuto orizzontalmente */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.new-post {
+    margin-top: 20px;
+}
+
+.new-post h2 {
+    margin-bottom: 10px;
+}
+
+.new-post input[type="text"],
+.new-post textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.new-post textarea {
+    height: 100px;
+}
+
+.text {cursor: text;}
+
+.new-post button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.posts .post {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.posts .post .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.posts .post .user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.posts .post .post-content img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.posts .post .post-content p {
+    margin-bottom: 10px;
+}
+
+.posts .post .post-content .comment-button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* //////// */
+
+
+.post-container {
+    max-width: 80%; /* Larghezza massima del contenitore dei post pari al 90% della larghezza della viewport */
+    margin: 20px auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.post-header .username {
+    font-weight: bold;
+}
+
+.follow-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delite-post-button{
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.delite-post-button:hover{
+    background-color: red;
+}
+
+/* .delite-post-button i:hover{
+    color: #d84731;
+} */
+
+.modify-post-button:hover{
+    background-color: yellow;
+}
+
+.modify-post-button{
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 10px;
+}
+
+.data-post{
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.data-commento{
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.post-header-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.follow-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.follow-button:hover {
+    background-color: #0056b3;
+}
+
+.post-title {
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.post-image {
+    width: 100%;
+}
+
+.post-details {
+    padding: 12px;
+    /* margin-top: 20px; */
+}
+
+.post-description {
+    color: #333;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-top: 1px solid #eee;
+}
+
+.post-actions .likes {
+    color: #8e8e8e;
+}
+
+.like-button button {
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.like-button button:hover {
+    background-color: #0056b3;
+}
+
+.like-button {
+    margin-right: 5px;
+}
+
+.like-button button.liked {
+    background-color: #ff6347;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Aggiunto box-shadow */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Ombra aggiunta */
+}
+
+.like-button button.liked:hover {
+    background-color: #d84731;
+}
+
+.comments-section {
+    padding: 12px;
+}
+
+.comments-title {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.comment {
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.comment img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.comment .username {
+    font-weight: bold;
+}
+
+.comment .text {
+    color: #333;
+}
+
+.comment-form {
+    position: relative; /* Impostiamo la posizione relativa */
+    display: flex; /* Utilizziamo flexbox per allineare gli elementi */
+    align-items: center; /* Allineiamo verticalmente gli elementi */
+    height: 50px; /* Altezza del contenitore */
+}
+
+.comment-form textarea {
+    width: calc(100% - 50px); /* Larghezza della textarea meno la larghezza del pulsante */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    height: 45px;
+}
+
+.comment-form button {
+    width: 45px;
+    height: 45px; /* Altezza uguale all'altezza della textarea */
+    padding: 0; /* Rimuoviamo il padding per far sì che l'icona riempia completamente il pulsante */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 2px; /* Impostiamo il bordo rotondo per ottenere un pulsante circolare */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.comment-form button:hover {
+    background-color: #0056b3;
+}
+
+.comment-form button i {
+    font-size: 18px;
+}
+
+.nascosto{
+    display: none; /* Nasconde la sezione dei commenti per impostazione predefinita */
+}
+
+.comment-toggle {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+}
+
+.comment-toggle:hover {
+    text-decoration: none;
+}
+
+.video-container {
+    width: 90%;
+    margin: 0 auto; /* Centra orizzontalmente */
+    border-radius: 10px; /* Rendi gli angoli rotondi */
+    overflow: hidden; /* Assicura che il video non esca dai bordi arrotondati */
+}
+
+.video-container video {
+    width: 100%; /* Rendi il video larghezza al 100% del suo contenitore */
+    display: block; /* Assicura che il video occupi l'intera larghezza del suo contenitore */
+}
+
+
+/* Stili per la modale */
+.modal-open {
+    overflow: hidden;
+}
+
+/* Stili per la modale */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Centratura della modale */
+.modal-content {
+    background-color: #fefefe;
+    position: absolute; /* Cambiato da 'relative' a 'absolute' */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+}
+
+.close {
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+color: black;
+text-decoration: none;
+cursor: pointer;
+}
+
+.current-media-preview img,
+.current-media-preview video {
+max-width: 90%;
+height: auto;
+max-height: 400px;
+}
+
+.placeholder {
+color: #999;
+font-style: italic;
+}
+
+.modifyPostForm {
+margin-top: 20px;
+}
+
+.modifyPostForm input[type="text"],
+.modifyPostForm textarea,
+.modifyPostForm input[type="file"],
+.modifyPostForm button {
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+box-sizing: border-box;
+}
+
+.modifyPostForm textarea{
+    height: 100px;
+}
+
+.modifyPostForm button {
+background-color: #007bff;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+.modifyPostForm button:hover {
+background-color: #0056b3;
+}
+
+/* Contenitore per l'input file e la checkbox */
+.media-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding is included in width */
+    margin-bottom: 10px;
+}
+
+/* Stile per il file input */
+.media {
+    flex-grow: 1 !important;
+    border: none !important;
+    margin-right: 10px !important;
+    margin-bottom: 0px !important;
+}
+
+/* Stile per il paragrafo */
+.checkbox-label {
+    margin: 0 10px 0 0;
+    white-space: nowrap; /* Prevent line break within the paragraph */
+}
+
+/* Stile per la checkbox */
+.styled-checkbox {
+    appearance: none;
+    width: 26px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    margin-right: 15px;
+}
+
+/* Stile per la checkbox selezionata */
+.styled-checkbox:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Segno di spunta */
+.styled-checkbox:checked::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
